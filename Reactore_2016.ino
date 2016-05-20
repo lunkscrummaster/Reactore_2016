@@ -5,7 +5,7 @@
 
 // battery charge circuit alternates every 'CHARGE_ALTERNATE_MINUTES'
 #define CHARGE_ALTERNATE_MINUTES   60
-
+// test changed
 
 #include "AS.h"
 #include "CIS.h"
