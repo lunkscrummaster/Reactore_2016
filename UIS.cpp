@@ -321,6 +321,8 @@ void UISystem::enterState(byte newState) {
       lcd.setCursor(2, 3);  lcd.print("Duration:");
       break;
 
+
+// Below is when the machine is pushing back
     case UIS_SCRUM_STRENGTH_CHARGE:
       initcharge.enable(false);  // lock in Init Charge pressure
       halSetPushbackDumpValve(HIGH);

@@ -10,9 +10,13 @@
 #define MILLIS_MAX 4294967295
 
 // values are raw sonar counts (microseconds)
-#define INDIVIDUAL_SINK_RAISE      650, 675
-#define POWER_SINK_RAISE           650, 800  // here are the pushback arm settings
-#define STRENGTH_SINK_RAISE        405, 465
+/* **** Changed May 20, 2016. Trevor, Zach, and Lunk
+ *  The  values below have been updated to the new sonar values for the new placement of the sonar.
+ *  Minimum pushback distance is approx. 33cm, max is approx 40cm
+*/
+#define INDIVIDUAL_SINK_RAISE      350, 380   // 
+#define POWER_SINK_RAISE           350, 380  // here are the pushback arm settings
+#define STRENGTH_SINK_RAISE        340, 360
 
 
 // limits for pushback arm during charge (raw values)

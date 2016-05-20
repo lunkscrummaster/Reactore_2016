@@ -66,7 +66,12 @@ void PushbackSystem::heartbeat() {
       if (debugFlagPBS)
         DEBUG_PRINT_I(readySinkTo);
 #endif
-      if (readySinkTo <= son) {
+/* Changes made May 20, 2016 by Trevor, Zach and Kevin
+ *  readySinkTo is the lower limit. The machine will sink to this value, or below then start raising.
+ *  the machine will raise until readyRaiseTo is less than or equal to the sonar value
+ *  once this raise is complete, the machine enters a settling state for apprx 1sec, then is quiet
+ */
+      if (readySinkTo >= son) {
         // start raising
         digitalWrite(oAirSpringLockout, HIGH);
         enterState(PBS_READY2_RAISING);
@@ -80,7 +85,7 @@ void PushbackSystem::heartbeat() {
 #endif
  // Serial.print("ready to raise= ");Serial.println(readyRaiseTo);
  // Serial.print("son = "); Serial.println(son);
-      if (readyRaiseTo >= son) {
+      if (readyRaiseTo <= son) {
         // start settling
         enterState(PBS_READY3_SETTLING);
       }

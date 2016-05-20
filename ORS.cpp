@@ -22,7 +22,7 @@ void OutriggerSystem::loop() {
     int ld = halReadSonar_OutriggerLoose(2);
     int td = halReadSonar_OutriggerTight(2);
 
-    if (ld > 0 && td > 0)
+    if (ld > 0 && td > 0) { // if both are reading good values
       if (digitalRead(oOutriggerLooseUp)) {
         if (ld - td > ORS_BALANCE_TRIP)
           digitalWrite(oOutriggerLooseUp, LOW);
@@ -30,6 +30,7 @@ void OutriggerSystem::loop() {
         if (ld - td < - ORS_BALANCE_TRIP)
           digitalWrite(oOutriggerLooseUp, HIGH);
       }
+    } // if both sonars are reading positive values
   } // end if(inBalanceMode)
 }// end of outrigger system
 
@@ -86,6 +87,12 @@ void OutriggerSystem::heartbeat(void) {
   }
 }
 
+/* setBalance Mode
+ *  This function is called from the PushbackSystem::enterState 
+ *  1. This function takes a true/false, and sets the inBalance mode
+ *  2. if it is inBalanceMode is true, and false has been passed, change inBalanceMode to false
+ *  3. if inBalanceMode is false, and true has been passed, change inBalanceMode to true
+*/
 void OutriggerSystem::setBalanceMode(boolean en) {
   DEBUG_PRINT_S(" ORS.setBal=");
   DEBUG_PRINT_I(en);
@@ -98,11 +105,11 @@ void OutriggerSystem::setBalanceMode(boolean en) {
       digitalWrite(oOutriggerLooseUp,   LOW);
       digitalWrite(oOutriggerTightDown, LOW);
       digitalWrite(oOutriggerTightUp,   LOW);
-    }
+    } // end if(! en)
   } else {
     if (en) {
       // enabling balance mode
       inBalanceMode = true;
-    }
-  }
-}
+    } // end if (en)
+  } // end else
+} // end setBalanceMode
