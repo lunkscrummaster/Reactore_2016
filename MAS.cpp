@@ -1,5 +1,6 @@
 #include "MAS.h"
 
+
 #include "AS.h"
 #include "HAL.h"
 #include "ICS.h"
@@ -159,12 +160,31 @@ void MasterSystem::heartbeat() {
    *  Currently, the state lastUIState is always == 1, and the swtich statement below is a little weird
    * 
   */
-  byte uiState = ui.getState();
+  byte uiState = ui.getState(); // returns a value 0 -> 5 depending on the state
+  byte ssState = sleep.getState(); //returns the value of the state 0 = Asleep, 1 = Awake
+
+  if (uiState > 0 && ssState == 1) {
+    accustat.enable(true);
+    pushback.enable(true);
+    if (uiState > 2) {
+      initcharge.enable(true);
+    }
+  } else {
+    if (digitalRead(iTrailerPowerPin) == LOW) {
+      accustat.enable(false);
+      pushback.enable(false);
+      initcharge.enable(false);
+    } // if the truck is hooked up, write above to low
+  } // end if
+/* Removed code below  
   boolean isLastUIStateNotTowing = lastUIState != UIS_TOWING;
   initcharge.enable              (isLastUIStateNotTowing);
   pushback.enable                (isLastUIStateNotTowing);
   accustat.enable                (isLastUIStateNotTowing);
-  digitalWrite(oReservoirLockout, isLastUIStateNotTowing ? HIGH : LOW); //switches a boolean to high or low appropriately
+*/
+
+  
+  digitalWrite(oReservoirLockout, ssState ? HIGH : LOW); //switches a boolean to high or low appropriately
 
   //***** the switch statement is lacking logic because it is switching a variable that has just been 
   // define to == 1 ?????????????????????????????

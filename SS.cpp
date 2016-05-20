@@ -87,3 +87,14 @@ void SleepSystem::enterState(byte newState) {
       break;
   }//end switch
 }// end SleepSystem::enterState
+
+/* SleepSystem::getState() {
+ *  This function is called in MAS.cpp
+ *  1. all this function does is return the sleep state, awake or asleep
+*/
+
+byte SleepSystem::getState() {
+  return state;
+}
+
+

@@ -12,6 +12,8 @@ class SleepSystem {
 
     void wakeup();
 
+    byte getState();
+
   private:
     byte state;
     void enterState(byte newState);

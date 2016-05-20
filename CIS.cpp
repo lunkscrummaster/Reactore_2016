@@ -38,7 +38,7 @@ void CompressorSystem::heartbeat(void)
     case CSS_OFF:
       if (reservoirPressure < pvTankPressMin) { //if the compressor is off, and the tank is to low, turn it on
         inverter.neededByCompressor(true); 
-        digitalWrite(oUnloaderPin, HIGH); //turn on compressor
+        digitalWrite(oUnloaderPin, HIGH); //dump pressure for 2 heart beats before compressor is truned on
         pvUnloaderTimeout = 2;    // number of heartbeat intervals to wait for unloader
         enterState(CSS_STARTING); //compressor system is now starting
       } else
