@@ -61,6 +61,11 @@ void PushbackSystem::heartbeat() {
   while(analogRead(aitestdebugtrigger) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
     
   switch (state) {
+    /* Changes made May 20, 2016 by Trevor, Zach and Kevin
+ *  readySinkTo is the lower limit. The machine will sink to this value, or below then start raising.
+ *  the machine will raise until readyRaiseTo is less than or equal to the sonar value
+ *  once this raise is complete, the machine enters a settling state for apprx 1sec, then is quiet
+ */
     case PBS_READY1_SINKING:
 #ifdef DEBUG
       if (debugFlagPBS)
@@ -73,7 +78,7 @@ void PushbackSystem::heartbeat() {
  */
       if (readySinkTo >= son) {
         // start raising
-        digitalWrite(oAirSpringLockout, HIGH);
+        digitalWrite(oAirSpringLockout, HIGH);  //written high to allow air into the springs
         enterState(PBS_READY2_RAISING);
       }
       break;
@@ -137,14 +142,14 @@ void PushbackSystem::enterState(byte newState) {
       break;
 
     case PBS_READY1_SINKING:
-      digitalWrite(oAirSpringLockout, LOW);
+      digitalWrite(oAirSpringLockout, LOW); // when low, suspension is availble to go down 
       accustat.pause();
       halSetPushbackUpDown(-1);
       break;
 
     case PBS_READY2_RAISING:
       halSetPushbackUpDown(1);
-      outriggers.setBalanceMode(true);
+      outriggers.setBalanceMode(true); //beging to balance the machine
       break;
 
     case PBS_READY3_SETTLING:

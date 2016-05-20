@@ -23,6 +23,10 @@
 #define oPushbackArmDownPin               38  //big arm spring
 #define oPushbackArmUpPin                 40  
 
+/* oAirSpringLocket
+ *  LOW:  Written low connects the springs to the mechancial balancer
+ *  HIGH: When written high, cuts off the switch and allows air to be pumped into the spring
+*/
 #define oAirSpringLockout                 42        //bleeds air out of air springs, charges the air system, blocking vents for leveling
 #define oChargeAlternatePin               44        // Charge alternating relay
 
@@ -46,6 +50,10 @@
 #define oDisplayPowerPin                  27        // Turns off large display when sleeping
 
 // tighthead outrigger control (non-battery side)
+/*  The two pins below, are written low the entire time the system is running.
+ *   These machine only uses the loosehead outrigger (battery side) to balance the machine
+ *   
+*/
 #define oOutriggerTightUp                 39
 #define oOutriggerTightDown               41
 
