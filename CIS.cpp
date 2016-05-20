@@ -123,6 +123,8 @@ void InverterSystem::heartbeat() {
   boolean enabled = nbCompressor || nbDumpValve; //either these need inverter?
 
   byte ac = digitalRead(iInverterOnPin);
+  // iInverterOnPin: High when inverter on
+  // iInverterOnPin: Low when inverter off
 
   Serial.print("iInverterOnPin: "); Serial.println(ac);
   Serial.print("enabled: "); Serial.println(enabled);
@@ -139,7 +141,7 @@ void InverterSystem::heartbeat() {
     case 1:  // starting
       digitalWrite(oBatteryLink, HIGH); Serial.println("Inverter starting");    // link the batteries while inverter is running
     case 3:  // stopping
-      if (! digitalRead(oInverterPin))
+      if (! digitalRead(oInverterPin)) // ???? lol wat
         digitalWrite(oInverterPin, HIGH); Serial.println("Inverter stopping");  // begins pressing button on inverter
       break;
 // ???? whenever the system is awake, the batteries should be linked
@@ -175,6 +177,11 @@ void InverterSystem::heartbeat() {
 */
 void InverterSystem::neededByCompressor(boolean en) {
   nbCompressor = en;
+  sleep.wakeup(); //wake up system ****
+  /* **** Changes made May 20, 2016 By t,z,k
+   *  Whenever the compressor is needed while asleep, the system will wake up
+   *  This will allow for the batteries to be linked
+  */
 } //end InverterSystem::neededByCompressor
 
 /* InverterSystem::neededByDumpValve

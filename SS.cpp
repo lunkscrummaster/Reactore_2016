@@ -50,11 +50,13 @@ void SleepSystem::heartbeat() {
   }
       else if (true /* canSleep */) {
         enterState(SSS_ASLEEP);//go to sleep
-       /* ???? digitalWrite(oBatteryLink, LOW); // **** B Disconnect the batteries when ASLEEP
+       /* **** Changed May 20,th 2016 by trevor zach and kevin
+        *  digitalWrite(oBatteryLink, LOW); // **** B Disconnect the batteries when ASLEEP
        // You can't disconnect the batteries here, because while the machine is asleep, 
        it may need to connect the batteries for the inverter to add air to the resevoir
        find a new place to do this
        */
+       digitalWrite(oBatteryLink, LOW);
       }
       break;
   }// end switch
