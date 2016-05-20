@@ -24,13 +24,13 @@
 #define oPushbackArmUpPin                 40  
 
 /* oAirSpringLocket
- *  LOW:  Written low connects the springs to the mechancial balancer
+ *  LOW:  
  *  HIGH: When written high, cuts off the switch and allows air to be pumped into the spring
 */
 #define oAirSpringLockout                 42        //bleeds air out of air springs, charges the air system, blocking vents for leveling
 #define oChargeAlternatePin               44        // Charge alternating relay
 
-#define oReservoirLockout                 46        // shut off to stop leaks
+#define oReservoirLockout                 46        // shut off to stop leaks, opens when written high
 #define oUnloaderPin                      48        // unloads airpressure from compressor head (otherwise compressor won't start), 
 
 #define oInitialChargeUp                  50        // increase Initial Charge, resevoir that will dump on players when the ball goes in, changes depending on the difficulty setting

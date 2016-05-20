@@ -155,6 +155,11 @@ void MasterSystem::heartbeat() {
     }
   }
 
+  /* **** CHAGNED MADE By Trevor Zach and Kevin
+   *  Currently, the state lastUIState is always == 1, and the swtich statement below is a little weird
+   * 
+  */
+  byte uiState = ui.getState();
   boolean isLastUIStateNotTowing = lastUIState != UIS_TOWING;
   initcharge.enable              (isLastUIStateNotTowing);
   pushback.enable                (isLastUIStateNotTowing);

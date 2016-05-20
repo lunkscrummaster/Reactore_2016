@@ -106,7 +106,10 @@ void PushbackSystem::heartbeat() {
   }
 } //end pushback heartbeat2
 
-/*
+/* PushbackSystem::enable
+ *  This function is called from MasterSystem::heartbeat() 
+ *  1. ????
+ *  
 */
 void PushbackSystem::enable(boolean en) {
   if (en) {
@@ -116,7 +119,7 @@ void PushbackSystem::enable(boolean en) {
 #ifdef DEBUG
       if (debugFlagPBS) DEBUG_PRINT_S(" PBS-enabled");
 #endif
-    }
+    } // end if
   } else {
     if (enabled) {
       // disabling
@@ -125,9 +128,9 @@ void PushbackSystem::enable(boolean en) {
 #ifdef DEBUG
       if (debugFlagPBS) DEBUG_PRINT_S(" PBS-DISabled");
 #endif
-    }
-  }
-}
+    } // end if (enabled)
+  } // end else
+} // end PushbackSystem::enable
 /* PushbackSystem::enterState this takes a new state, or current state
  *  Function is called from MAS.cpp
  *  1. depending on the state, depends on what it does

@@ -133,8 +133,24 @@ void UISystem::loop() {
   if (setWasPressed) Serial.println("SET WAS PRESSED");
   if (adjust != 0)   Serial.println("UP OR DOWN WAS PRESSED");
   // wakeup sleep system if a button was pressed
-  if (modeWasPressed || setWasPressed || adjust != 0)
+
+/* **** Possible changes made to the LCD below. May 20, 2016 by Trevor Zach and Kevin1
+ *  The screen sometimes makes a fuzzy display due to possible EMI
+ *  1. By enterState(state); we will reset the screen every time a button is pressed.
+ *  2. This is just a possible implementation.
+*/
+/* **** CHANGED By Trevor Zach and Kevin
+ *  We want the machine to be SSS_AWAKE while the truck is plugged in.
+ *  This can be done by looking at the truck power connection as another way to wake it up.
+ *  Original if (modeWasPressed || setWasPressed || adjust != 0){
+*/
+  if (modeWasPressed || setWasPressed || adjust != 0 || digitalRead(iTrailerPowerPin) == LOW){
     sleep.wakeup();
+  // ****  enterState(state); //reset the screen
+  } // end if button was pressed
+
+    // ???? investigate the sonar pushback safety stystem of when it should shut off because 
+    // it is going to fast
 
   // reset the Accustat when the Set button is pressed
   if (setWasPressed)

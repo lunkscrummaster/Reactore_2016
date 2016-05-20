@@ -51,6 +51,8 @@ class UISystem {
     // enter UIS_SCRUM_STRENGTH_POSTHIT and display message
     void goStrengthPosthit(byte SPH_code, int val);
 
+    //byte returnUIState();
+
   private:
     LiquidCrystal  &lcd;
 
