@@ -78,11 +78,14 @@ UISystem::UISystem(LiquidCrystal &lc) :
   lcd  (lc)
 {
   // user-modifiable var info:           col, row, width, val, min, max //////////
+/* Changes made May 21 by Trevor and Zach  
+ *  Previously, mins for UIVM_POWER_THRESHOLD,UIVM_STRENGTH_THRESHOLD, UIVM_STRENGTH_DIFFICULTY == 0
+ *  Changed these to be == 1, just as a safety feature
+*/
+  setModVarInfo(UIVM_POWER_THRESHOLD,     15,  1, 2, 10, 3, 10);
 
-  setModVarInfo(UIVM_POWER_THRESHOLD,     15,  1, 2, 10, 0, 10);
-
-  setModVarInfo(UIVM_STRENGTH_THRESHOLD,  15,  1, 2, 10, 0, 10);
-  setModVarInfo(UIVM_STRENGTH_DIFFICULTY, 15,  2, 2,  2, 0, 10);
+  setModVarInfo(UIVM_STRENGTH_THRESHOLD,  15,  1, 2, 10, 3, 10);
+  setModVarInfo(UIVM_STRENGTH_DIFFICULTY, 15,  2, 2,  2, 1, 10);
   setModVarInfo(UIVM_STRENGTH_DURATION,   15,  3, 2,  5, 1, 15);
 
   // non-modifiable var info: col, row, width //////////

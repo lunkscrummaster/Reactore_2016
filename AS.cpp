@@ -1,4 +1,5 @@
 #include "AS.h"
+#include "SS.h"
 
 #include "AVG.h"
 #include "HAL.h"
@@ -9,7 +10,9 @@
 
 
 // raw pressure readings are multiplied by this for display
-#define DISPLAY_FACTOR  20
+#define DISPLAY_FACTOR    20
+#define NATURAL_PRECHARGE 200
+#define ENGAGED_MIN       150
 
 // accustat states
 #define AS_QUIET      0 // sleep/ not being used
@@ -179,6 +182,15 @@ Accustat::Accustat() {
  * 
 */
 void Accustat::loop() {
+/* Added code below by trevor and zach
+ *  So if the machine is in sleep mode, the machine should wake up when someone hits the pads
+ *  check to see if in sleep, then wakeup if pressure on pads is there.
+  */
+  if (sleep.getState() == 0)
+  {
+      if (analogRead(aiAchievedPin) > 210 )
+          sleep.wakeup(); 
+  }
   
   Serial.println("Accustat Loop Started");
   Serial.print("Accustat STATE: "); Serial.println(accustat.state);
@@ -443,7 +455,13 @@ void Accustat::heartbeat() {
         DEBUG_PRINT_I(precharge);
 //DISPLAY_FACTOR  20
 //
-        int disp = DISPLAY_FACTOR * (lastReading - precharge);//
+/* **** Changed made May 21 by Trevor and Zach       
+ *  Below, the converiosn that was made before didn't seem right.
+ *  We changed the equation to what we got from the data that was supplised by Kevin
+*/
+        //changed this equation to fit experimentally acquired data 
+        int x = lastReading - NATURAL_PRECHARGE;
+        int disp = ((-6)*(10^(-10))*(x^6)) + (4*(10^(-7))*(x^5)) - (1*(10^(-4))*(x^4)) + (0.0111*(x^3)) - (0.3613*(x^2)) + (11.237*x); 
         if (disp < 0)
           disp = 0;
 /*
@@ -461,27 +479,33 @@ void Accustat::heartbeat() {
             break;
           // below will call a penatly if the players are pushing to hard before the ball is in???
           case ASM_POWER: {
-              int threshold = ui.getVar(UIVM_POWER_THRESHOLD) * 100;
-              if (disp > threshold){
-                if (hasSeenBall) {
-                  if (hiddenPeak < disp) {
-                    hiddenPeak = disp;
+             if(disp > ENGAGED_MIN){ 
+                int threshold = ui.getVar(UIVM_POWER_THRESHOLD) * 100;
+                if (disp > threshold){
+                  if (hasSeenBall) {
+                    if (hiddenPeak < disp) {
+                      hiddenPeak = disp;
+                    }
+                    DEBUG_PRINT_S(" hp=");
+                    DEBUG_PRINT_I(hiddenPeak);
+                  } else {
+                    digitalWrite(oBeeper, HIGH);
+                    DEBUG_PRINT_S(" d=");  DEBUG_PRINT_I(disp);
+                    DEBUG_PRINT_S(" t=");  DEBUG_PRINT_I(threshold);
+                    DEBUG_PRINT_S(" BEEEEP");
                   }
-                  DEBUG_PRINT_S(" hp=");
-                  DEBUG_PRINT_I(hiddenPeak);
-                } else {
-                  digitalWrite(oBeeper, HIGH);
-                  DEBUG_PRINT_S(" d=");  DEBUG_PRINT_I(disp);
-                  DEBUG_PRINT_S(" t=");  DEBUG_PRINT_I(threshold);
-                  DEBUG_PRINT_S(" BEEEEP");
-                }
-              }// closes if (disp > threshold)
+                }// closes if (disp > threshold)
+             }
             }
             break;
-
+            
           case ASM_STRENGTH: {
-              int threshold = ui.getVar(UIVM_STRENGTH_THRESHOLD) * 100;
-              if (disp > threshold){
+/* ADDED, by trevor and zach May 21
+ *  So if the machine has a reading of 100lbs of force or more, then is can possibly pushback  
+*/
+            if (disp > ENGAGED_MIN ) { // if someone is pushing against the machine
+              int threshold = ui.getVar(UIVM_STRENGTH_THRESHOLD) * 100; //this is in lbs
+              if (disp > threshold){ //if (current measured pressure > minimum to push  )
                 if (hasSeenBall) {
                   if (hiddenPeak < disp) {
                     hiddenPeak = disp;
@@ -490,14 +514,15 @@ void Accustat::heartbeat() {
                   }
                   DEBUG_PRINT_S(" hp=");
                   DEBUG_PRINT_I(hiddenPeak);
-                } else {
+                } else { // ball has not been seen, give a penatly
                   digitalWrite(oBeeper, HIGH);
                   DEBUG_PRINT_S(" d=");  DEBUG_PRINT_I(disp);
                   DEBUG_PRINT_S(" t=");  DEBUG_PRINT_I(threshold);
                   DEBUG_PRINT_S(" BEEEEP");
-                }
+                } // end else
               } //closes if (disp > threshold)
-            }
+} // end if (disp > someoneis there)
+            } // end ASM_STRENGTH
             break;
         }
 
@@ -508,7 +533,7 @@ void Accustat::heartbeat() {
 
         if (cooldownCounter > 0)
           cooldownCounter--;
-        else //what is this supposed to do???? "I BET THIS ELSE NEEDS BRACKETS AROUND CASE STATEMENT" Z-DAWG
+        else{ //what is this supposed to do???? "I BET THIS ELSE NEEDS BRACKETS AROUND CASE STATEMENT" Z-DAWG
           switch (mode) {
             case ASM_INDIVIDUAL:
               enterState(AS_POSTHIT);
@@ -519,6 +544,7 @@ void Accustat::heartbeat() {
                 enterState(AS_POSTHIT);
               break;
           }// end switch (mode)
+        }//closes else ie cooldownCounter = 0
       }
       break;
 
