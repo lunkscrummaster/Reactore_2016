@@ -462,7 +462,7 @@ void Accustat::heartbeat() {
           // below will call a penatly if the players are pushing to hard before the ball is in???
           case ASM_POWER: {
               int threshold = ui.getVar(UIVM_POWER_THRESHOLD) * 100;
-              if (disp > threshold)//missing brackets????????????????************
+              if (disp > threshold){//missing brackets????????????????************
                 if (hasSeenBall) {
                   if (hiddenPeak < disp) {
                     hiddenPeak = disp;
@@ -475,12 +475,13 @@ void Accustat::heartbeat() {
                   DEBUG_PRINT_S(" t=");  DEBUG_PRINT_I(threshold);
                   DEBUG_PRINT_S(" BEEEEP");
                 }
+              }// closes if (disp > threshold)
             }
             break;
 
           case ASM_STRENGTH: {
               int threshold = ui.getVar(UIVM_STRENGTH_THRESHOLD) * 100;
-              if (disp > threshold)
+              if (disp > threshold){
                 if (hasSeenBall) {
                   if (hiddenPeak < disp) {
                     hiddenPeak = disp;
@@ -495,6 +496,7 @@ void Accustat::heartbeat() {
                   DEBUG_PRINT_S(" t=");  DEBUG_PRINT_I(threshold);
                   DEBUG_PRINT_S(" BEEEEP");
                 }
+              } //closes if (disp > threshold)
             }
             break;
         }
