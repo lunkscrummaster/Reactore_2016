@@ -212,7 +212,7 @@ void Accustat::loop() {
     switch (state) {
       case AS_PREHIT: {
           int diff = p - avg; //difference between the current and average reading
-          if (diff > HIT_TRIP) { //#define HIT_TRIP     6 
+          if (diff > HIT_TRIP) { //#define HIT_TRIP     6 ???? confirm this operation wrt #define (HIT_TRIP) based on reading during operation
             if (mode == ASM_INDIVIDUAL)
               lastReading = p; 
             else
