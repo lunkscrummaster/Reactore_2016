@@ -2,6 +2,7 @@
 #include <Timer.h>  // https://github.com/JChristensen/Timer
 
 #include "Debug.h"
+//comment!!@#$
 
 // battery charge circuit alternates every 'CHARGE_ALTERNATE_MINUTES'
 #define CHARGE_ALTERNATE_MINUTES   60
