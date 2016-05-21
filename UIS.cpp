@@ -115,7 +115,7 @@ void UISystem::setModVarInfo(byte vn, byte col, byte row, byte width, int val, i
 void UISystem::loop() {
   Serial.println("UI Loop started");
   Serial.print("UI state: "); Serial.println(ui.state);
-  while(analogRead(aitestdebugtrigger) > 300);  Serial.println("continue"); // debug, waits untill pin 34 written high by user debug button
+  while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill pin 34 written high by user debug button
   
   unsigned long m = micros();
   unsigned long elapsedMicros = m - lastMicros;

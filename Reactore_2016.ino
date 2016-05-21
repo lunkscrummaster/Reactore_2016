@@ -199,7 +199,7 @@ void loop() {
   Serial.println("waiting for debug button");
   Serial.print("This is the initial accustat mode"); Serial.println(accustat.returnmode());
   
-  while(analogRead(aitestdebugtrigger) > 300);  Serial.println("continue"); // debug, waits untill pin 34 written high by user debug button
+  while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill pin 34 written high by user debug button
   
   ui.loop();          // call debouncer frequently
 

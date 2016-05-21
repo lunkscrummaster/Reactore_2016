@@ -32,7 +32,7 @@ void CompressorSystem::heartbeat(void)
 
   Serial.print("resevoirPressure: ");Serial.println(reservoirPressure);
   Serial.println("waiting for debug button");
-  while(analogRead(aitestdebugtrigger) > 300);  Serial.println("continue"); // debug, waits untill pin 17 written high by user debug button
+  while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill pin 17 written high by user debug button
   
   switch (state) {
     case CSS_OFF:
@@ -129,7 +129,7 @@ void InverterSystem::heartbeat() {
   Serial.print("iInverterOnPin: "); Serial.println(ac);
   Serial.print("enabled: "); Serial.println(enabled);
   Serial.println("waiting for debug button");
-  while(analogRead(aitestdebugtrigger) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
+  while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
   
   byte st;
   if (!enabled && !ac)  st = 0;

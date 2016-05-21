@@ -29,7 +29,7 @@ void InitialChargeSystem::heartbeat() {
   int pres = analogRead(aiPrechargePin); //read pressure
 
   Serial.print("aiPrecharge Pressure:  "); Serial.println(pres);
-  while(analogRead(aitestdebugtrigger) > 300);  Serial.println("continue"); // debug, waits untill pin 17 written high by user debug button
+  while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill pin 17 written high by user debug button
 
   DEBUG_PRINT_S(" ICS.");
   DEBUG_PRINT_I(digitalRead(oInitialChargeDown));

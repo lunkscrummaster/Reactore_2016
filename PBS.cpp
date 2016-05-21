@@ -58,7 +58,7 @@ void PushbackSystem::heartbeat() {
   DEBUG_PRINT_S("/");
   Serial.print("Pushback System State:  "); Serial.println(pushback.state);
   Serial.println("waiting for debug button");
-  while(analogRead(aitestdebugtrigger) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
+  while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
     
   switch (state) {
     /* Changes made May 20, 2016 by Trevor, Zach and Kevin

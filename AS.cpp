@@ -196,7 +196,7 @@ void Accustat::loop() {
   Serial.print("Accustat STATE: "); Serial.println(accustat.state);
   Serial.print("Current accustat Mode: "); Serial.println(accustat.mode);
   Serial.println("waiting for debug button");
-  while(analogRead(aitestdebugtrigger) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
+  while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
   
   if (isEnabled() && state != AS_QUIET) {
     // update running sum
@@ -204,7 +204,7 @@ void Accustat::loop() {
     
     Serial.print("Read aiAcheivedPin :"); Serial.println(p);
     Serial.println("waiting for debug button");
-    while(analogRead(aitestdebugtrigger) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
+    while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
   
     pbAvg.update(p);//update the average, using the last read value
 
@@ -401,7 +401,7 @@ void Accustat::heartbeat() {
   Serial.println("Accustat Heartbeat Started");
   
   
-  while(analogRead(aitestdebugtrigger) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
+  while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
   
   beeperHeartbeat();//just above
   displayHeartbeat();//just above

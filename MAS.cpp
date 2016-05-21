@@ -61,7 +61,7 @@ void MasterSystem::loop() {
     Serial.print("Sonar PUSHBACK READING: "); Serial.println(son);
     Serial.print("Pressure in PUSHBACK: "); Serial.println(pres);
     Serial.println("waiting for debug button");
-    while(analogRead(aitestdebugtrigger) > 300);  Serial.println("continue");
+    while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue");
     
     
     DEBUG_PRINT_S("#");
@@ -78,7 +78,7 @@ void MasterSystem::loop() {
     Serial.print("Pushback Sonar Value: "); Serial.println(son);
     Serial.print("Pushback Air Pressure: "); Serial.println(pres);
     Serial.println("waiting for debug button");
-    while(analogRead(aitestdebugtrigger) > 300);  Serial.println("continue");
+    while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue");
     
     if (son < CHARGE_DISTANCE_TRIP) { //#define CHARGE_DISTANCE_TRIP  635   // if sonar over this, shutdown
       // if sonar too high,
@@ -142,7 +142,7 @@ void MasterSystem::loop() {
 void MasterSystem::heartbeat() {
   
   Serial.println("Master System Heartbeat Started");   Serial.println("waiting for debug button");
-  while(analogRead(aitestdebugtrigger) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
+  while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
 
    
   // check towing switch
