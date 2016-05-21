@@ -82,10 +82,14 @@ void SleepSystem::wakeup() {
 void SleepSystem::enterState(byte newState) {
   switch (state = newState) {
     case SSS_ASLEEP:
+         digitalWrite(oDisplayPowerPin, LOW);
       break;
 
     case SSS_AWAKE:
       timeoutHeartbeats = SLEEP_TIMEOUT_SECONDS * HEARTBEATS_PER_SECOND;
+      if(digitalRead(iTrailerPowerPin) == HIGH){  //truck not plugged in
+        digitalWrite(oDisplayPowerPin, HIGH);      //turn on LED
+      }
       break;
   }//end switch
 }// end SleepSystem::enterState
