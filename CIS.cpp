@@ -1,5 +1,5 @@
 #include "CIS.h"
-
+#include "SS.h"
 #include "HAL.h"
 
 #include "pinDefs.h"  // inverterPin, inverterOnPin
@@ -146,7 +146,7 @@ void InverterSystem::heartbeat() {
       break;
 // ???? whenever the system is awake, the batteries should be linked
     case 0:  // stopped
-      digitalWrite(oBatteryLink, LOW); Serial.println("Inverter stopped");   // unlink the batteries while inverter not running
+     // ****  digitalWrite(oBatteryLink, LOW); Serial.println("Inverter stopped");   // unlink the batteries while inverter not running
     case 2:  // running
       if (digitalRead(oInverterPin))
         digitalWrite(oInverterPin, LOW);  Serial.println(" Inverter running");// stops pressing button when inverter has started/stopped

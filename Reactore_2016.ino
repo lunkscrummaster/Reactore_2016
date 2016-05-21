@@ -5,7 +5,13 @@
 
 // battery charge circuit alternates every 'CHARGE_ALTERNATE_MINUTES'
 #define CHARGE_ALTERNATE_MINUTES   60
-//another chanf
+
+#define TRAVEL_TIME   1000
+/* Hi Kevin. Hope you are doing well. If you want to change the TRAVEL_TIME, which is the length of time
+ *  the sled will be pushed after there was a successful push.
+ *  1000 = 1 second
+ *  2000 = 2 seconds etc...
+*/
 
 #include "AS.h"
 #include "CIS.h"
@@ -170,16 +176,16 @@ void setup() {
 
   lcd.begin(20, 4); //sets up screen
 
-//  pinMode(debugPin, INPUT);
-
   heartbeatTimer.every(1000L / HEARTBEATS_PER_SECOND, heartbeat); //calls heartbeat function when timer goes off.
 
   chargeAlternateTimer.every(CHARGE_ALTERNATE_MINUTES * 60L * 1000, chargeAlternateCallback);
 
-  DEBUG_PRINT_S("Setup done\n");
-
+  DEBUG_PRINT_S("Setup done\n");  
+  
   Serial.println("Setup Complete");
 }
+
+
 
 //============================== loop ==============================
 /* loop()
@@ -199,7 +205,14 @@ void loop() {
   accustat.loop();    // to average pushback-arm pressure readings
 
   outriggers.loop();  // fast update of outrigger balancing system
-
+  if(master.successStartTime > 0){
+      int currentMillis = millis() - master.successStartTime;
+      if (currentMillis > TRAVEL_TIME) {
+        digitalWrite(oSuccess, LOW);
+        master.successStartTime = 0;
+      }
+      
+  }
   master.loop();      // during Strength Charge phase
 
 
@@ -211,5 +224,7 @@ void loop() {
 
   chargeAlternateTimer.update();
 
+
+    
 }
 

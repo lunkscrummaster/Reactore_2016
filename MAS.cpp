@@ -1,6 +1,6 @@
 #include "MAS.h"
 
-
+#include "SS.h"
 #include "AS.h"
 #include "HAL.h"
 #include "ICS.h"
@@ -119,6 +119,7 @@ void MasterSystem::loop() {
     if (strengthChargeTimeoutMillis < 0) {
       strengthChargeTimeoutMillis = 0;
       digitalWrite(oSuccess, HIGH);
+      successStartTime = millis();
       ui.goStrengthPosthit(UISPH_SUCCESS, 0);//changes the screen to display success
       accustat.saveHiddenPeak();
     }
@@ -223,7 +224,12 @@ void MasterSystem::pushbackIsReady() {
 */
 void MasterSystem::accustatEnteringPosthit() {
   strengthChargeTimeoutMillis = 0;
+  /* Changes made May 20, 2016 by trevor zach and lunk
+   *  We are commenting all writing of oSuccess to low
+   *  This will be done using a timer. So after there is a success, the timer will start.
+   *  This timer will be edited by Kevin in the field to what his preference is.
   digitalWrite(oSuccess, LOW);  // just to make sure
+  */
   if (lastReadyState != UIS_SCRUM_INDIVIDUAL)
     ui.enterState(lastReadyState);
 } //end MasterSystem::accustatEnteringPosthit
@@ -239,7 +245,12 @@ void MasterSystem::UIModeChanged(byte uis) {
     case UIS_SCRUM_POWER:
     case UIS_SCRUM_STRENGTH:
       lastReadyState = lastUIState;
-      digitalWrite(oSuccess, LOW);  // just to make sure
+  /* Changes made May 20, 2016 by trevor zach and lunk
+   *  We are commenting all writing of oSuccess to low
+   *  This will be done using a timer. So after there is a success, the timer will start.
+   *  This timer will be edited by Kevin in the field to what his preference is.
+  digitalWrite(oSuccess, LOW);  // just to make sure
+  */
       break;
   }
 
@@ -277,3 +288,7 @@ void MasterSystem::UIVarChanged(byte uivn, int val) {
       break;
   }
 }
+
+
+
+

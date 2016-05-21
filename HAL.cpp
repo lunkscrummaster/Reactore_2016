@@ -159,6 +159,7 @@ boolean halIsTowScrumSwitchInTowing() {
 /* halSetInitialChargeUpDown
  *  This function is called from InitialChargeSystem::enterState 
  *  1. Takes a value, and writes charge up and down pins high or low depending on previous state
+ *  2. If dir == 0, both are written low. therefor does not charge up or down
 */
 void halSetInitialChargeUpDown(int dir) {
   digitalWrite(oInitialChargeDown, dir < 0 ? HIGH : LOW);

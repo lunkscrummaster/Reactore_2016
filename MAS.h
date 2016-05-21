@@ -8,6 +8,7 @@
 
 ////////////////////////////// MasterSystem //////////////////////////////
 
+
 class MasterSystem {
   public:
     MasterSystem();
@@ -20,7 +21,7 @@ class MasterSystem {
     // called by UISystem when its mode changes, or one of its vars change
     void UIModeChanged(byte uis);
     void UIVarChanged (byte uivn, int val);
-
+    long successStartTime = 0;
   private:
     byte lastUIState;
     byte lastReadyState;
@@ -30,6 +31,7 @@ class MasterSystem {
     unsigned long lastMillis;
     long strengthChargeTimeoutMillis;
     byte strengthPosthitTimeoutHeartbeats;
+
 };
 
 #endif

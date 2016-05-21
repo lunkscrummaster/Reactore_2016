@@ -108,9 +108,9 @@ void InitialChargeSystem::setTargetPercent(int per) {
 
   int pres = analogRead(aiPrechargePin);
   if (targetPressure > pres)
-    enterState(ICS_RAISING); //increase pressure in pushback arm if needed
+    enterState(ICS_RAISING); //increase pressure in charge tank pushback arm if needed
   else if (targetPressure < pres)
-    enterState(ICS_LOWERING); //lower pressure in pushback arm if needed
+    enterState(ICS_LOWERING); //lower pressure in charge tank pushback arm if needed
 } // end InitialChargeSystem::setTargetPercent
 
 /* InitialChargeSystem::enterState
