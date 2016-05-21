@@ -2,11 +2,11 @@
 #include <Timer.h>  // https://github.com/JChristensen/Timer
 
 #include "Debug.h"
-//comment!!@#$
+
 
 // battery charge circuit alternates every 'CHARGE_ALTERNATE_MINUTES'
 #define CHARGE_ALTERNATE_MINUTES   60
-
+#define MILLIS_MAX 4294967295
 #define TRAVEL_TIME   1000
 /* Hi Kevin. Hope you are doing well. If you want to change the TRAVEL_TIME, which is the length of time
  *  the sled will be pushed after there was a successful push.
@@ -206,12 +206,18 @@ void loop() {
   accustat.loop();    // to average pushback-arm pressure readings
 
   outriggers.loop();  // fast update of outrigger balancing system
+  /* Code added May 21 by Trevor and Zach
+   *  The code below is used for the successtimer which is what is used to determine how long the 
+   *  sled can be pushed after a success. Code handles rollovers after approx 50days
+  */
   if(master.successStartTime > 0){
-      int currentMillis = millis() - master.successStartTime;
+       long currentMillis = millis() - master.successStartTime;
+      if(currentMillis < 0)
+          currentMillis += MILLIS_MAX; // rollover
       if (currentMillis > TRAVEL_TIME) {
-        digitalWrite(oSuccess, LOW);
+        digitalWrite(oSuccess, LOW); 
         master.successStartTime = 0;
-      }
+      } 
       
   }
   master.loop();      // during Strength Charge phase

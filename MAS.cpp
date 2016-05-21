@@ -105,20 +105,23 @@ void MasterSystem::loop() {
       ui.goStrengthPosthit(UISPH_TOO_MUCH, pres - CHARGE_PRESSURE_TRIP);
       return;
     }
-/* The code below does...????????????????????????????????????????
+/* Code Added by Trevor and Zach
+ *  The code below, keeps track of the timer for the strength charge push, which after they hold this for a certain 
+ *  time, the sled is released, and it can be pushed. The sled push length is handled by anothter timer.
+ *  Rollover is taken into account here.
 */
     // check for Duration timeout
-    unsigned long m = millis();
-    unsigned long elapsedMillis = 0;
+     long m = millis();
+     long elapsedMillis = 0;
     if (m > lastMillis)
         elapsedMillis = m - lastMillis;
     else
-        elapsedMillis = m - lastMillis + MILLIS_MAX;
-    lastMillis = m;
+        elapsedMillis = m - lastMillis + MILLIS_MAX; //rollover
+    lastMillis = m; 
     strengthChargeTimeoutMillis -= elapsedMillis;
     if (strengthChargeTimeoutMillis < 0) {
       strengthChargeTimeoutMillis = 0;
-      digitalWrite(oSuccess, HIGH);
+      digitalWrite(oSuccess, HIGH); //allow for the sled to move
       successStartTime = millis();
       ui.goStrengthPosthit(UISPH_SUCCESS, 0);//changes the screen to display success
       accustat.saveHiddenPeak();

@@ -28,7 +28,7 @@ class MasterSystem {
     byte lastTowSwitch;
 
     // used during loop() in STRENGTH CHARGE phase
-    unsigned long lastMillis;
+    long lastMillis;
     long strengthChargeTimeoutMillis;
     byte strengthPosthitTimeoutHeartbeats;
 
