@@ -462,7 +462,7 @@ void Accustat::heartbeat() {
           // below will call a penatly if the players are pushing to hard before the ball is in???
           case ASM_POWER: {
               int threshold = ui.getVar(UIVM_POWER_THRESHOLD) * 100;
-              if (disp > threshold){//missing brackets????????????????************
+              if (disp > threshold){
                 if (hasSeenBall) {
                   if (hiddenPeak < disp) {
                     hiddenPeak = disp;
@@ -508,7 +508,7 @@ void Accustat::heartbeat() {
 
         if (cooldownCounter > 0)
           cooldownCounter--;
-        else //what is this supposed to do????
+        else //what is this supposed to do???? "I BET THIS ELSE NEEDS BRACKETS AROUND CASE STATEMENT" Z-DAWG
           switch (mode) {
             case ASM_INDIVIDUAL:
               enterState(AS_POSTHIT);
