@@ -47,7 +47,7 @@ void CompressorSystem::heartbeat(void)
 
     case CSS_STARTING:
       if (pvUnloaderTimeout > 1) {
-        pvUnloaderTimeout--;  // keep waiting
+        pvUnloaderTimeout--;  // keep waiting  This works allongs as 
       } else if (digitalRead(iInverterOnPin)) {
         digitalWrite(oUnloaderPin, LOW);        // unloader has timed out so close it
         digitalWrite(oCompressorPin, HIGH);
