@@ -57,7 +57,7 @@ void beeperSetup() {
  * 2. Write oBeeper to low just in case
 */
 void beeperHeartbeat() {
-  Serial.println("beeper Heartbeat");
+  //Serial.println("beeper Heartbeat");
   if (beeperToDo > 0) {
     if (beeperCountdown-- <= 1) {
       // start or stop beeper
@@ -151,7 +151,7 @@ void display_num(int number) {
  *  1. calls display_num, which updates the LED screen with either the sessionPeak or currentPeak
 */
 void Accustat::displayHeartbeat() {
-      Serial.println("Accustat displayHeartbeat start");
+     // Serial.println("Accustat displayHeartbeat start");
   // if displayAlternateIndex == 0 then display sessionPeak else display currentPeak;
   // this cycles so that it displays sessionPeak, currentPeak, currentPeak, currentPeak, ...
   display_num(displayAlternateIndex == 0 ? sessionPeak : currentPeak);
@@ -188,23 +188,25 @@ void Accustat::loop() {
   */
   if (sleep.getState() == 0)
   {
-      if (analogRead(aiAchievedPin) > 210 )
+      if (analogRead(aiAchievedPin) > 275 ) {
           sleep.wakeup(); 
+          Serial.print("  analogRead(aiAchievedPin) is wakeing it up"); Serial.println(analogRead(aiAchievedPin));
+      }
   }
   
-  Serial.println("Accustat Loop Started");
-  Serial.print("Accustat STATE: "); Serial.println(accustat.state);
-  Serial.print("Current accustat Mode: "); Serial.println(accustat.mode);
-  Serial.println("waiting for debug button");
-  while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
+//  Serial.println("Accustat Loop Started");
+//  Serial.print("Accustat STATE: "); Serial.println(accustat.state);
+//  Serial.print("Current accustat Mode: "); Serial.println(accustat.mode);
+//  Serial.println("waiting for debug button");
+//  //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
   
   if (isEnabled() && state != AS_QUIET) {
     // update running sum
     int p = analogRead(aiAchievedPin); //read current value and assign to p
     
-    Serial.print("Read aiAcheivedPin :"); Serial.println(p);
-    Serial.println("waiting for debug button");
-    while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
+//    Serial.print("Read aiAcheivedPin :"); Serial.println(p);
+//    Serial.println("waiting for debug button");
+//    //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
   
     pbAvg.update(p);//update the average, using the last read value
 
@@ -348,7 +350,7 @@ void Accustat::saveHiddenPeak() {
 */
 void Accustat::enterState(byte newState) {
   state = newState;
-  Serial.print("Accustat enterState: "); Serial.println(newState);
+ // Serial.print("Accustat enterState: "); Serial.println(newState);
   switch (state) {
     case AS_QUIET:
       displayAlternateIndex = DISPLAYMODE_ALTERNATE; // this code indicates "alternate between current peak and session peak"
@@ -398,10 +400,10 @@ void Accustat::enterState(byte newState) {
  * 3. Checks state, and does things depending on the state
 */
 void Accustat::heartbeat() {
-  Serial.println("Accustat Heartbeat Started");
+  //Serial.println("Accustat Heartbeat Started");
   
   
-  while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
+  //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
   
   beeperHeartbeat();//just above
   displayHeartbeat();//just above

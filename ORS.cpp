@@ -13,10 +13,10 @@ OutriggerSystem::OutriggerSystem() {
  * ORS_BALANCE_TRIP == 40 WHICH IS ABOVE ^^^
 */
 void OutriggerSystem::loop() {
-  Serial.println("Outrigger Loop started"); 
-  Serial.print("The balance mode is : "); Serial.println(outriggers.inBalanceMode);
-  Serial.println("waiting for debug button");
-  while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
+//  Serial.println("Outrigger Loop started"); 
+ // Serial.print("The balance mode is : "); Serial.println(outriggers.inBalanceMode);
+//  Serial.println("waiting for debug button");
+//  //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
 
   if (inBalanceMode) {
     int ld = halReadSonar_OutriggerLoose(2);
@@ -58,13 +58,13 @@ void OutriggerSystem::heartbeat(void) {
     orsUpPin   = oOutriggerLooseUp;
   }
 #endif
-  Serial.println("Outrigger System Heartbeat Started"); // ???? Comment these reading values when code is complete to save time
+//  Serial.println("Outrigger System Heartbeat Started"); // ???? Comment these reading values when code is complete to save time
   int ol = halReadSonar_OutriggerLoose(1);
   int ot = halReadSonar_OutriggerTight(1);
-  Serial.print("Loose Sonar Value "); Serial.println(ol);
-  Serial.print("Tight Sonar Value "); Serial.println(ot);
-  Serial.println("waiting for debug button");
-  while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
+//  Serial.print("Loose Sonar Value "); Serial.println(ol);
+//  Serial.print("Tight Sonar Value "); Serial.println(ot);
+//  Serial.println("waiting for debug button");
+//  //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
 
   DEBUG_PRINT_S(" ol=");
   DEBUG_PRINT_I(ol);
@@ -96,7 +96,7 @@ void OutriggerSystem::heartbeat(void) {
 void OutriggerSystem::setBalanceMode(boolean en) {
   DEBUG_PRINT_S(" ORS.setBal=");
   DEBUG_PRINT_I(en);
-  Serial.print("Outrigger balance mode: "); Serial.println(inBalanceMode);
+//  Serial.print("Outrigger balance mode: "); Serial.println(inBalanceMode);
   if (inBalanceMode) {
     if (! en) {
       // disabling balance mode

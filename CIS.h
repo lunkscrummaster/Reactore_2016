@@ -9,9 +9,10 @@ class CompressorSystem {
   public:
     CompressorSystem();
     void heartbeat(void);
+   
 
   private:
-    byte state;
+    byte state = 0;
     void enterState(byte newState);
 
     // reservoir pressure setpoints

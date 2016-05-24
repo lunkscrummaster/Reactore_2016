@@ -23,13 +23,13 @@ InitialChargeSystem::InitialChargeSystem() {
  *  2. Put states to ICS_QUIET when done
 */
 void InitialChargeSystem::heartbeat() {
-  Serial.println("Initial Charge System Heartbeat Started");
-  Serial.print("Initial Charge System State:  "); Serial.println(initcharge.state);
+//  Serial.println("Initial Charge System Heartbeat Started");
+//  Serial.print("Initial Charge System State:  "); Serial.println(initcharge.state);
   
   int pres = analogRead(aiPrechargePin); //read pressure
 
-  Serial.print("aiPrecharge Pressure:  "); Serial.println(pres);
-  while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill pin 17 written high by user debug button
+//  Serial.print("aiPrecharge Pressure:  "); Serial.println(pres);
+  //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill pin 17 written high by user debug button
 
   DEBUG_PRINT_S(" ICS.");
   DEBUG_PRINT_I(digitalRead(oInitialChargeDown));

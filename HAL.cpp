@@ -59,7 +59,7 @@
 int hal_ReadSonarMB7360(byte tries, byte pin) {
   unsigned long durationMicros = 0;
   while (tries-- > 0) {
-    durationMicros = pulseIn(pin, HIGH, 10000);
+    durationMicros = pulseIn(pin, HIGH, 100000);
      
     if (durationMicros > 0) //if get a good reading, then break out
       break;
@@ -68,8 +68,8 @@ int hal_ReadSonarMB7360(byte tries, byte pin) {
   // MB7360 counts one microsec per millimetre distance;
   // simpler sonars count about 5.8 microsecs per millimetre distance (the speed of sound),
   // so convert the MB7360 microsecs into a time-of-flight microsec count
-  durationMicros = durationMicros * 58 / 10;
-  return durationMicros < 32768L ? durationMicros : 32767;
+  //durationMicros = durationMicros * 58 / 10;
+  return durationMicros; //< 32768L ? durationMicros : 32767;
 } // end hal_ReadSonarMB7360
 
 ////////// 'GLOBAL' HARDWARE ABSTRACTION ROUTINES ////////////////////////////////////////
@@ -102,7 +102,7 @@ void halSetup() {
     LOW,  oPushbackDumpValve,
 
     LOW,  oDisplayPowerPin,
-    LOW,  oPushback_sonar_trigger,
+ //   LOW,  oPushback_sonar_trigger,
 
     LOW,  oLEDClear,
     LOW,  oLEDData,

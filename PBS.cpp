@@ -25,8 +25,8 @@ PushbackSystem::PushbackSystem() {
  *  
 */
 void PushbackSystem::heartbeat() {
-  Serial.println("Pushback System Heartbeat Started");
-  Serial.print("Pushback initial state: "); Serial.println(pushback.state); 
+//  Serial.println("Pushback System Heartbeat Started");
+//  Serial.print("Pushback initial state: "); Serial.println(pushback.state); 
   
 #ifdef DEBUG
   if (debugFlagPBS) {
@@ -53,12 +53,12 @@ void PushbackSystem::heartbeat() {
 
   int son = halReadSonar_Pushback(2);//find value of pushback sonar
   
-  Serial.print("Push Back Sonar Value: "); Serial.println(son); Serial.print("readySinkTo: "); Serial.println(readySinkTo);
+  //Serial.print("Push Back Sonar Value: "); Serial.println(son); Serial.print("readySinkTo: "); Serial.println(readySinkTo);
   DEBUG_PRINT_I(son);
   DEBUG_PRINT_S("/");
-  Serial.print("Pushback System State:  "); Serial.println(pushback.state);
-  Serial.println("waiting for debug button");
-  while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
+//  Serial.print("Pushback System State:  "); Serial.println(pushback.state);
+//  Serial.println("waiting for debug button");
+//  //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
     
   switch (state) {
     /* Changes made May 20, 2016 by Trevor, Zach and Kevin
@@ -138,6 +138,7 @@ void PushbackSystem::enable(boolean en) {
 */
 void PushbackSystem::enterState(byte newState) {
   state = newState;
+ // Serial.print ("pushback system new state: "); Serial.println(state);
   switch (state) {
     case PBS_QUIET:
       halSetPushbackUpDown(0);

@@ -17,7 +17,7 @@
 */
 #define INDIVIDUAL_SINK_RAISE      350, 380   // 
 #define POWER_SINK_RAISE           350, 380  // here are the pushback arm settings
-#define STRENGTH_SINK_RAISE        340, 360
+#define STRENGTH_SINK_RAISE        330, 350
 
 
 // limits for pushback arm during charge (raw values)
@@ -49,19 +49,19 @@ MasterSystem::MasterSystem() {
  *  3. If the pressure in the tank is > CHARGE_PRESSURE_TRIP  (400) ,  which goes into ui.goStrengthPosthit which just updates the display
 */
 void MasterSystem::loop() {
-  Serial.println("Master loop started");
-  Serial.print("lastUIstate: "); Serial.println(master.lastUIState);
-  Serial.print("last ready state: "); Serial.println(master.lastReadyState);
-  Serial.print("last tow state: "); Serial.println(master.lastTowSwitch);
+//  Serial.println("Master loop started");
+//  Serial.print("lastUIstate: "); Serial.println(master.lastUIState);
+//  Serial.print("last ready state: "); Serial.println(master.lastReadyState);
+//  Serial.print("last tow state: "); Serial.println(master.lastTowSwitch);
   if (strengthChargeTimeoutMillis > 0) {
     // read sonar and pushback pressure
     int son  = halReadSonar_Pushback(2);
     int pres = analogRead(aiAchievedPin);
     
-    Serial.print("Sonar PUSHBACK READING: "); Serial.println(son);
-    Serial.print("Pressure in PUSHBACK: "); Serial.println(pres);
-    Serial.println("waiting for debug button");
-    while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue");
+//    Serial.print("Sonar PUSHBACK READING: "); Serial.println(son);
+//    Serial.print("Pressure in PUSHBACK: "); Serial.println(pres);
+//    Serial.println("waiting for debug button");
+//    //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue");
     
     
     DEBUG_PRINT_S("#");
@@ -75,10 +75,10 @@ void MasterSystem::loop() {
     DEBUG_PRINT_S("\n");
 
     // check sonar distance
-    Serial.print("Pushback Sonar Value: "); Serial.println(son);
-    Serial.print("Pushback Air Pressure: "); Serial.println(pres);
-    Serial.println("waiting for debug button");
-    while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue");
+//    Serial.print("Pushback Sonar Value: "); Serial.println(son);
+//    Serial.print("Pushback Air Pressure: "); Serial.println(pres);
+//    Serial.println("waiting for debug button");
+//    //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue");
     
     if (son < CHARGE_DISTANCE_TRIP) { //#define CHARGE_DISTANCE_TRIP  635   // if sonar over this, shutdown
       // if sonar too high,
@@ -141,8 +141,8 @@ void MasterSystem::loop() {
 */
 void MasterSystem::heartbeat() {
   
-  Serial.println("Master System Heartbeat Started");   Serial.println("waiting for debug button");
-  while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
+//  Serial.println("Master System Heartbeat Started");   Serial.println("waiting for debug button");
+//  //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
 
    
   // check towing switch
@@ -174,11 +174,11 @@ void MasterSystem::heartbeat() {
       initcharge.enable(true);
     }
   } else {
-    if (digitalRead(iTrailerPowerPin) == LOW) {
-      accustat.enable(false);
-      pushback.enable(false);
-      initcharge.enable(false);
-    } // if the truck is hooked up, write above to low
+//    if (digitalRead(iTrailerPowerPin) == LOW) {  // TRUCK
+//      accustat.enable(false);
+//      pushback.enable(false);
+//      initcharge.enable(false);
+//    } // if the truck is hooked up, write above to low
   } // end if
 /* Removed code below  
   boolean isLastUIStateNotTowing = lastUIState != UIS_TOWING;

@@ -11,7 +11,7 @@
 
 // pushback arm sonar
 //******** why is there two sonars below????****************//
-#define oPushback_sonar_trigger           30 //don't worry about this pin
+//#define oPushback_sonar_trigger           30 //don't worry about this pin, now used as iInverterOnPin
 #define iPushback_sonar_echo              32 //use this as the PUSHBACK SONAR
 
 // ball-in sonars
@@ -69,7 +69,7 @@
 
 ////////////////////////////// INPUT PINS
 
-#define iInverterOnPin                    28
+#define iInverterOnPin                    30 
 
 #define iButtonPinSet                      8        // SET BUTTON
 #define iButtonPinDown                     9        // DOWN BUTTON

@@ -5,10 +5,10 @@
 #include "pinDefs.h"    // iTrailerPowerPin
 
 // sleeps after this long (must be <= 136 minutes or 'timeoutHeartbeats' will overflow)
-#define SLEEP_TIMEOUT_SECONDS  (15 * 60)
+#define SLEEP_TIMEOUT_SECONDS  (1 * 10) //original SLEEP_TIMEOUT_SECONDS  (15 * 60)
 
-#define SSS_ASLEEP  0 //System is ASLEEP
-#define SSS_AWAKE   1 //System is AWAKE
+//#define SSS_ASLEEP  0 //System is ASLEEP  MOVED TO HEADER
+//#define SSS_AWAKE   1 //System is AWAKE
 
 
 SleepSystem::SleepSystem() {
@@ -32,7 +32,7 @@ SleepSystem::SleepSystem() {
  *  2. When the system is asleep, the batteries should not be connected
 */
 void SleepSystem::heartbeat() {
-    Serial.print("Sleep system state: "); Serial.println(sleep.state);
+    //Serial.print("Sleep system state: "); Serial.println(sleep.state);
 #ifdef DEBUG
   if (debugFlagSleep) {
     DEBUG_PRINT_S(" SS:");
@@ -41,14 +41,17 @@ void SleepSystem::heartbeat() {
     DEBUG_PRINT_I(timeoutHeartbeats);
   }
 #endif
-  Serial.print("Sleep System Heartbeat State:  "); Serial.println(state);
+  //Serial.print("Sleep System Heartbeat State:  "); Serial.println(state);
+ // Serial.print("  timeoutHeartbeats: "); Serial.println(timeoutHeartbeats);
   switch (state) {
     case SSS_AWAKE:
       if (timeoutHeartbeats > 0)  {
         timeoutHeartbeats--; //decrement the timer
+        Serial.print("  timeoutHeartbeats = "); Serial.println(timeoutHeartbeats);
         digitalWrite(oBatteryLink, HIGH); // **** A Connect the batteries when AWAKE
   }
       else if (true /* canSleep */) {
+        Serial.println("gone to sleep@@@@@@@@@@@@@@");
         enterState(SSS_ASLEEP);//go to sleep
        /* **** Changed May 20,th 2016 by trevor zach and kevin
         *  digitalWrite(oBatteryLink, LOW); // **** B Disconnect the batteries when ASLEEP
@@ -70,6 +73,7 @@ void SleepSystem::heartbeat() {
 */
 // ???? whenever the system is awake, the batteries should be linked
 void SleepSystem::wakeup() {
+  Serial.println(" THE SYSTEM ENTERING AWAKE ");
   enterState(SSS_AWAKE);
 } //end SleepSystem::wakeup
 
@@ -80,14 +84,19 @@ void SleepSystem::wakeup() {
  *  2. If told to wake up, from SleepSystem::wakeup(), reset the timeoutHeartbeats
 */
 void SleepSystem::enterState(byte newState) {
+  
   switch (state = newState) {
     case SSS_ASLEEP:
          digitalWrite(oDisplayPowerPin, LOW);
+         //ui.enterState(ui.getState());
       break;
 
     case SSS_AWAKE:
       timeoutHeartbeats = SLEEP_TIMEOUT_SECONDS * HEARTBEATS_PER_SECOND;
-      if(digitalRead(iTrailerPowerPin) == HIGH){  //truck not plugged in
+      Serial.println("The SSS_awake enterstate fucntion reset timeoutheartbeats");
+      // added analogRead(aiScrumPin) == LOW to see if that would help the LED screen from flickering
+      if(digitalRead(iTrailerPowerPin) == LOW && analogRead(aiScrumPin) == HIGH){  //truck not plugged in
+        // TRUCK original: digitalRead(iTrailerPowerPin) == HIGH 
         digitalWrite(oDisplayPowerPin, HIGH);      //turn on LED
       }
       break;

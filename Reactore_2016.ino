@@ -7,6 +7,7 @@
 // battery charge circuit alternates every 'CHARGE_ALTERNATE_MINUTES'
 #define CHARGE_ALTERNATE_MINUTES   60
 #define MILLIS_MAX 4294967295
+#define MICROS_MAX 4294967295
 #define TRAVEL_TIME   1000
 /* Hi Kevin. Hope you are doing well. If you want to change the TRAVEL_TIME, which is the length of time
  *  the sled will be pushed after there was a successful push.
@@ -104,7 +105,7 @@ extern void beep(byte count);  // AS.cpp
  *  This is the main heartbeat of the system. All other heart beats are called from here.
 */
 void heartbeat() {
-  Serial.println("Enter Heartbeat");
+ // Serial.println("Enter Heartbeat");
 #ifdef DEBUG
   switch (debugRead()) {
 //  case '0':  digitalWrite(oSuccess, LOW);   break;
@@ -183,7 +184,7 @@ void setup() {
 
   DEBUG_PRINT_S("Setup done\n");  
   
-  Serial.println("Setup Complete");
+ // Serial.println("Setup Complete");
 }
 
 
@@ -195,12 +196,12 @@ void setup() {
 
 void loop() {
 
-  Serial.println("Main Loop Started"); 
-  Serial.println("waiting for debug button");
-  Serial.print("This is the initial accustat mode"); Serial.println(accustat.returnmode());
-  
-  while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill pin 34 written high by user debug button
-  
+//  Serial.println("Main Loop Started"); 
+//  Serial.println("waiting for debug button");
+//  Serial.print("This is the initial accustat mode"); Serial.println(accustat.returnmode());
+//  
+//  //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill pin 34 written high by user debug button
+//  
   ui.loop();          // call debouncer frequently
 
   accustat.loop();    // to average pushback-arm pressure readings

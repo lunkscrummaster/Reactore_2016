@@ -26,14 +26,14 @@ CompressorSystem::CompressorSystem() {
 */
 void CompressorSystem::heartbeat(void)
 {
-  Serial.print("Compressor System Heartbeat Started, State: "); Serial.println(comp.state);
+  //Serial.print("Compressor System Heartbeat Started, State: "); Serial.println(comp.state);
  
   int reservoirPressure = analogRead(aiReservoirPin);
 
-  Serial.print("resevoirPressure: ");Serial.println(reservoirPressure);
-  Serial.println("waiting for debug button");
-  while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill pin 17 written high by user debug button
-  
+  Serial.print("  resevoirPressure: ");Serial.print(reservoirPressure);
+//  Serial.println("waiting for debug button");
+//  //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill pin 17 written high by user debug button
+  Serial.print("  compressor state: ");Serial.println(state);
   switch (state) {
     case CSS_OFF:
       if (reservoirPressure < pvTankPressMin) { //if the compressor is off, and the tank is to low, turn it on
@@ -51,6 +51,7 @@ void CompressorSystem::heartbeat(void)
       } else if (digitalRead(iInverterOnPin)) {
         digitalWrite(oUnloaderPin, LOW);        // unloader has timed out so close it
         digitalWrite(oCompressorPin, HIGH);
+        //Serial.print("oCompressorPin: "); Serial.print(oCompressorPin);
         enterState(CSS_ON); //the compressor is now on
       }
       break;
@@ -98,16 +99,17 @@ void CompressorSystem::heartbeat(void)
 */
 void CompressorSystem::enterState(byte newState) {
   state = newState;
-  Serial.print("Compressor System enterState: "); Serial.println(newState);
+  //Serial.print("Compressor System enterState: "); Serial.println(newState);
 } // end CompressorSystem::enterState
 
 ////////////////////////////// InverterSystem //////////////////////////////
 
 InverterSystem::InverterSystem() 
 {
-  digitalWrite(oInverterPin, LOW);
   pinMode(oInverterPin, OUTPUT);
-  pinMode(iInverterOnPin, INPUT_PULLUP);
+  digitalWrite(oInverterPin, LOW);
+  pinMode(iInverterOnPin, INPUT);
+  
 }
 
 /* InverterSystem::heartbeat()
@@ -118,7 +120,7 @@ InverterSystem::InverterSystem()
  *  Push the button again, and it turns the light(inverter) OFF
 */
 void InverterSystem::heartbeat() {
-  Serial.println("Inverter System heartbeat start ");
+  //Serial.println("Inverter System heartbeat start ");
   
   boolean enabled = nbCompressor || nbDumpValve; //either these need inverter?
 
@@ -126,30 +128,39 @@ void InverterSystem::heartbeat() {
   // iInverterOnPin: High when inverter on
   // iInverterOnPin: Low when inverter off
 
-  Serial.print("iInverterOnPin: "); Serial.println(ac);
-  Serial.print("enabled: "); Serial.println(enabled);
-  Serial.println("waiting for debug button");
-  while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
+//  Serial.print("enabled: "); Serial.println(enabled);
+//  Serial.println("waiting for debug button");
+//  //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
   
-  byte st;
+  byte st = 0 ;
   if (!enabled && !ac)  st = 0;
   if ( enabled && !ac)  st = 1;
-  if ( enabled &&  ac)  st = 2;
-  if (!enabled &&  ac)  st = 3;
-
+  if ( enabled && ac)  st = 2;
+  if (!enabled && ac)  st = 3;
+  
+  Serial.print(" Inverter running state: "); Serial.print(st);
+  Serial.print("  oInverterPin is: "); Serial.print(digitalRead(oInverterPin));
+  Serial.print("  enabled: "); Serial.print(enabled);
+  Serial.print("  iInverterOnPin: "); Serial.print(ac);
+ 
   switch (st) {
     case 1:  // starting
-      digitalWrite(oBatteryLink, HIGH); Serial.println("Inverter starting");    // link the batteries while inverter is running
+      digitalWrite(oBatteryLink, HIGH);
+      //Serial.println("Inverter starting");    // link the batteries while inverter is running
     case 3:  // stopping
-      if (! digitalRead(oInverterPin)) // Arduino digitalRead lets you read from pins declared as output
-        digitalWrite(oInverterPin, HIGH); Serial.println("Inverter stopping");  // begins pressing button on inverter
+      if (! digitalRead(oInverterPin)){ // Arduino digitalRead lets you read from pins declared as output
+        digitalWrite(oInverterPin, HIGH); //Serial.println("Inverter stopping");  // begins pressing button on inverter
+      Serial.println("**************************WRITTEN HIGH**************");}
       break;
 // ???? whenever the system is awake, the batteries should be linked
     case 0:  // stopped
+  //  Serial.println("inverter stopped");
      // ****  digitalWrite(oBatteryLink, LOW); Serial.println("Inverter stopped");   // unlink the batteries while inverter not running
     case 2:  // running
-      if (digitalRead(oInverterPin))
-        digitalWrite(oInverterPin, LOW);  Serial.println(" Inverter running");// stops pressing button when inverter has started/stopped
+      if (digitalRead(oInverterPin)){
+        digitalWrite(oInverterPin, LOW);  // stops pressing button when inverter has started/stopped
+      Serial.println("^^^^^^WRITTEN LOW^^^^^^^^");
+      }
       break;
   } //end switch
 
@@ -177,6 +188,7 @@ void InverterSystem::heartbeat() {
 */
 void InverterSystem::neededByCompressor(boolean en) {
   nbCompressor = en;
+  Serial.println("  InverterSystem::neededByCompressor is wakeing up system  ");
   sleep.wakeup(); //wake up system ****
   /* **** Changes made May 20, 2016 By t,z,k
    *  Whenever the compressor is needed while asleep, the system will wake up
