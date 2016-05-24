@@ -28,7 +28,7 @@ void InitialChargeSystem::heartbeat() {
   
   int pres = analogRead(aiPrechargePin); //read pressure
 
-//  Serial.print("aiPrecharge Pressure:  "); Serial.println(pres);
+  Serial.print(" aiPrecharge Pressure:  "); Serial.println(pres);
   //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill pin 17 written high by user debug button
 
   DEBUG_PRINT_S(" ICS.");
@@ -107,6 +107,11 @@ void InitialChargeSystem::setTargetPercent(int per) {
   targetPressure = (int) (PERCENT_TO_PRESSURE_OFFSET + per * PERCENT_TO_PRESSURE_FACTOR); //set pressure desired
 
   int pres = analogRead(aiPrechargePin);
+
+  Serial.print(" setTargetPercent: ");  Serial.print(per);
+  Serial.print(" targetPressure: ");  Serial.print(targetPressure);
+  Serial.print(" aiPrechargePressure: ");  Serial.print(pres);
+  
   if (targetPressure > pres)
     enterState(ICS_RAISING); //increase pressure in charge tank pushback arm if needed
   else if (targetPressure < pres)

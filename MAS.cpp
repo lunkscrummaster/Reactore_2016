@@ -22,7 +22,7 @@
 
 // limits for pushback arm during charge (raw values)
 #define CHARGE_PRESSURE_TRIP  400   // if pressure over this, shutdown (400 means approx. 30 lbs)
-#define CHARGE_DISTANCE_TRIP  635   // if sonar over this, shutdown
+#define CHARGE_DISTANCE_TRIP  390   // if sonar over this, shutdown
 
 
 // how long to wait after Strength Charge completes (Success or Shutdown)
@@ -58,8 +58,8 @@ void MasterSystem::loop() {
     int son  = halReadSonar_Pushback(2);
     int pres = analogRead(aiAchievedPin);
     
-//    Serial.print("Sonar PUSHBACK READING: "); Serial.println(son);
-//    Serial.print("Pressure in PUSHBACK: "); Serial.println(pres);
+    Serial.print("Sonar PUSHBACK READING: "); Serial.println(son);
+    Serial.print("Pressure in PUSHBACK: "); Serial.println(pres);
 //    Serial.println("waiting for debug button");
 //    //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue");
     
@@ -80,7 +80,7 @@ void MasterSystem::loop() {
 //    Serial.println("waiting for debug button");
 //    //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue");
     
-    if (son < CHARGE_DISTANCE_TRIP) { //#define CHARGE_DISTANCE_TRIP  635   // if sonar over this, shutdown
+    if (son > CHARGE_DISTANCE_TRIP) { //#define CHARGE_DISTANCE_TRIP  635   // if sonar over this, shutdown
       // if sonar too high,
       strengthChargeTimeoutMillis = 0;
       ui.goStrengthPosthit(UISPH_TOO_HIGH, son - CHARGE_DISTANCE_TRIP);//this just updates the lcd screen display

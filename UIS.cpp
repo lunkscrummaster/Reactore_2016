@@ -359,25 +359,32 @@ void UISystem::enterState(byte newState) {
   DEBUG_PRINT_S(" UIS->");
   cur_var = BAD_VARNUM;
   sleep.wakeup();
-  Serial.println("UISystem::enterState is forcing wakeup ");
+  /* if sleep.wakeup(); was moved into each state, we could possibly add a uisleepstate
+   *  This would allow for the screen to display that it is sleep, with the resevoir pressure
+   *  and we could probably turn off the inverter
+  */
+//  Serial.println("UISystem::enterState is forcing wakeup ");
   lcd.display();
   lcd.clear();
   //Serial.print("UI enterState: "); Serial.println(newState);
   //if(sleep.getState() == SSS_AWAKE){
     switch (state = newState) {
       case UIS_TOWING:
+      inverter.neededByDumpValve (false);
         DEBUG_PRINT_S("TOWING");
         lcd.print("=== TOWING MODE ===");
         lcd.setCursor(0, 1);  lcd.print("Reservoir Pressure:");
         break;
   
       case UIS_SCRUM_POWER:
+      inverter.neededByDumpValve (false);
         DEBUG_PRINT_S("POWER");
         lcd.print("** POWER DRIVING **");
         lcd.setCursor(3, 1);  lcd.print("Threshold:");
         break;
   
       case UIS_SCRUM_INDIVIDUAL:
+      inverter.neededByDumpValve (false);
         DEBUG_PRINT_S("INDIVIDUAL");
         lcd.print("++++ INDIVIDUAL ++++");
         lcd.setCursor(0, 1);

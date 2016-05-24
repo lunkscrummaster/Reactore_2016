@@ -19,9 +19,10 @@ void OutriggerSystem::loop() {
 //  //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
 
   if (inBalanceMode) {
-    int ld = halReadSonar_OutriggerLoose(2);
+    int ld = halReadSonar_OutriggerLoose(2); //was 2
     int td = halReadSonar_OutriggerTight(2);
-
+    Serial.print(" OutRiggers Loose: ");  Serial.print(ld); Serial.print(" OutRiggers Tight: "); Serial.print(td);
+    Serial.print(" Dif: "); Serial.println(ld - td);
     if (ld > 0 && td > 0) { // if both are reading good values
       if (digitalRead(oOutriggerLooseUp)) {
         if (ld - td > ORS_BALANCE_TRIP)
