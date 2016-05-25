@@ -109,7 +109,7 @@ void InitialChargeSystem::setTargetPercent(int per) {
   int pres = analogRead(aiPrechargePin);
 
   Serial.print(" setTargetPercent: ");  Serial.print(per);
-  Serial.print(" targetPressure: ");  Serial.print(targetPressure);
+  Serial.print(" targetPressure: ");  Serial.println(targetPressure);
   Serial.print(" aiPrechargePressure: ");  Serial.print(pres);
   
   if (targetPressure > pres)

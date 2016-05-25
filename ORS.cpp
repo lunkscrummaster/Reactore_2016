@@ -1,10 +1,11 @@
 #include "ORS.h"
 
 #include "HAL.h"
-
+#include "PBS.h"
+#include "MAS.h"
 #include "pinDefs.h"
 
-#define ORS_BALANCE_TRIP  40   // raises outrigger when sonars differ by more than this
+#define ORS_BALANCE_TRIP  5   // raises outrigger when sonars differ by more than this
 
 
 OutriggerSystem::OutriggerSystem() {
@@ -18,9 +19,9 @@ void OutriggerSystem::loop() {
 //  Serial.println("waiting for debug button");
 //  //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
 
-  if (inBalanceMode) {
-    int ld = halReadSonar_OutriggerLoose(2); //was 2
-    int td = halReadSonar_OutriggerTight(2);
+  if (inBalanceMode && pushback.getState() == PBS_QUIET) {
+    int ld = master.getOutriggerLooseAve(); //was 2
+    int td = master.getOutriggerTightAve();
     Serial.print(" OutRiggers Loose: ");  Serial.print(ld); Serial.print(" OutRiggers Tight: "); Serial.print(td);
     Serial.print(" Dif: "); Serial.println(ld - td);
     if (ld > 0 && td > 0) { // if both are reading good values
@@ -31,7 +32,12 @@ void OutriggerSystem::loop() {
         if (ld - td < - ORS_BALANCE_TRIP)
           digitalWrite(oOutriggerLooseUp, HIGH);
       }
-    } // if both sonars are reading positive values
+    }
+    int dif = ld - td;      // differencing algorythm to appropriately set inBalanceMode
+    if(dif < 0)
+        dif = td - ld;
+    if(dif < ORS_BALANCE_TRIP){
+         setBalanceMode(false);Serial.println("setBalanceMode = FALSE");}
   } // end if(inBalanceMode)
 }// end of outrigger system
 
@@ -60,8 +66,8 @@ void OutriggerSystem::heartbeat(void) {
   }
 #endif
 //  Serial.println("Outrigger System Heartbeat Started"); // ???? Comment these reading values when code is complete to save time
-  int ol = halReadSonar_OutriggerLoose(1);
-  int ot = halReadSonar_OutriggerTight(1);
+  int ol = master.getOutriggerLooseAve();
+  int ot = master.getOutriggerTightAve();
 //  Serial.print("Loose Sonar Value "); Serial.println(ol);
 //  Serial.print("Tight Sonar Value "); Serial.println(ot);
 //  Serial.println("waiting for debug button");

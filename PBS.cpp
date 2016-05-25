@@ -11,11 +11,6 @@
 #define SETTLING_COUNT   2   // number of heartbeat periods to wait
 
 
-// PushbackSystem states
-#define PBS_QUIET            0
-#define PBS_READY1_SINKING   1
-#define PBS_READY2_RAISING   2
-#define PBS_READY3_SETTLING  3
 
 
 PushbackSystem::PushbackSystem() {
@@ -51,9 +46,9 @@ void PushbackSystem::heartbeat() {
   }
 #endif
 
-  int son = halReadSonar_Pushback(2);//find value of pushback sonar
+  int son = master.getPushbackSonarAve();//find value of pushback sonar
   
-  //Serial.print("Push Back Sonar Value: "); Serial.println(son); Serial.print("readySinkTo: "); Serial.println(readySinkTo);
+  Serial.print("Push Back Sonar Value: "); Serial.println(son); Serial.print("readySinkTo: "); Serial.println(readySinkTo);
   DEBUG_PRINT_I(son);
   DEBUG_PRINT_S("/");
 //  Serial.print("Pushback System State:  "); Serial.println(pushback.state);
@@ -79,6 +74,7 @@ void PushbackSystem::heartbeat() {
       if (readySinkTo >= son) {
         // start raising
         digitalWrite(oAirSpringLockout, HIGH);  //written high to allow air into the springs
+        Serial.println(" PBS heartbeat changed PBS State ");
         enterState(PBS_READY2_RAISING);
       }
       break;
@@ -138,11 +134,11 @@ void PushbackSystem::enable(boolean en) {
 */
 void PushbackSystem::enterState(byte newState) {
   state = newState;
- // Serial.print ("pushback system new state: "); Serial.println(state);
+  Serial.print ("pushback system new state: "); Serial.println(state);
   switch (state) {
     case PBS_QUIET:
       halSetPushbackUpDown(0);
-      outriggers.setBalanceMode(false);
+      //outriggers.setBalanceMode(false);
       break;
 
     case PBS_READY1_SINKING:
@@ -152,13 +148,14 @@ void PushbackSystem::enterState(byte newState) {
       break;
 
     case PBS_READY2_RAISING:
+      Serial.println("PBS_READY2_RAISE called setBalanceMode");
       halSetPushbackUpDown(1);
       outriggers.setBalanceMode(true); //beging to balance the machine
       break;
 
     case PBS_READY3_SETTLING:
       halSetPushbackUpDown(0);
-      outriggers.setBalanceMode(false);
+      //outriggers.setBalanceMode(false);
       settlingTimeout = SETTLING_COUNT;
       break;
   }
@@ -174,10 +171,13 @@ void PushbackSystem::goReady(byte asMode, int sinkTo, int raiseTo) {
   readySinkTo  = sinkTo;
   readyRaiseTo = raiseTo;
   accustat.setMode(asMode);
+  Serial.println(" goReady changed PBS STATE");
   enterState(PBS_READY1_SINKING);// this is above^^
 }//end goReady
 
-
+byte PushbackSystem::getState(){
+      return state;  
+}
 
 //******************** WHY IS THIS COMMENTED OUT?????????????
 //void PushbackSystem::reReady() {

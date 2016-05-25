@@ -8,6 +8,7 @@
 
 ////////////////////////////// MasterSystem //////////////////////////////
 
+#define AVE_ARRAY_SIZE  3
 
 class MasterSystem {
   public:
@@ -21,7 +22,29 @@ class MasterSystem {
     // called by UISystem when its mode changes, or one of its vars change
     void UIModeChanged(byte uis);
     void UIVarChanged (byte uivn, int val);
+
+    void pushBackAve(void);
+    void outriggerLooseAve(void);
+    void outriggerTightAve(void);
+    int getPushbackSonarAve(void);
+    int getOutriggerLooseAve(void);
+    int getOutriggerTightAve(void);
+    
     long successStartTime = 0;
+    
+    boolean pushbackAveFull = false;
+    boolean outriggerLooseAveFull = false;
+    boolean outriggerTightAveFull = false;
+    int pushbackArrayIndex = 0;
+    int outriggerLooseIndex = 0;
+    int outriggerTightIndex = 0;
+    int pushbackSonar [AVE_ARRAY_SIZE] = {0};
+    int pushbackSonarAve = 0;
+    int outriggerLooseSonar [AVE_ARRAY_SIZE] = {0};
+    int outriggerLooseSonarAve = 0;
+    int outriggerTightSonar [AVE_ARRAY_SIZE] = {0};
+    int outriggerTightSonarAve = 0;
+    
   private:
     byte lastUIState;
     byte lastReadyState;

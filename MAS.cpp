@@ -17,7 +17,7 @@
 */
 #define INDIVIDUAL_SINK_RAISE      350, 380   // 
 #define POWER_SINK_RAISE           350, 380  // here are the pushback arm settings
-#define STRENGTH_SINK_RAISE        330, 350
+#define STRENGTH_SINK_RAISE        329, 337
 
 
 // limits for pushback arm during charge (raw values)
@@ -45,7 +45,7 @@ MasterSystem::MasterSystem() {
 /* MasterSystem loop
  *  This function is called from the main loop
  *  1. Read PushBackSonar and Air pressure in main push back system
- *  2. If the sonar value is > CHARGE_DISTANCE_TRIP (635), ui.goStrengthPosthit - which just updates the screen display
+ *  2. If the sonar value is > CHARGE_DISTANCE_TRIP (390), ui.goStrengthPosthit - which just updates the screen display
  *  3. If the pressure in the tank is > CHARGE_PRESSURE_TRIP  (400) ,  which goes into ui.goStrengthPosthit which just updates the display
 */
 void MasterSystem::loop() {
@@ -53,9 +53,14 @@ void MasterSystem::loop() {
 //  Serial.print("lastUIstate: "); Serial.println(master.lastUIState);
 //  Serial.print("last ready state: "); Serial.println(master.lastReadyState);
 //  Serial.print("last tow state: "); Serial.println(master.lastTowSwitch);
+  pushBackAve();
+  outriggerLooseAve();
+  outriggerTightAve();
+
   if (strengthChargeTimeoutMillis > 0) {
     // read sonar and pushback pressure
-    int son  = halReadSonar_Pushback(2);
+    //int son  = halReadSonar_Pushback(2);
+    int son = getPushbackSonarAve();
     int pres = analogRead(aiAchievedPin);
     
     Serial.print("Sonar PUSHBACK READING: "); Serial.println(son);
@@ -80,7 +85,7 @@ void MasterSystem::loop() {
 //    Serial.println("waiting for debug button");
 //    //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue");
     
-    if (son > CHARGE_DISTANCE_TRIP) { //#define CHARGE_DISTANCE_TRIP  635   // if sonar over this, shutdown
+    if (son > CHARGE_DISTANCE_TRIP) { //#define CHARGE_DISTANCE_TRIP  390   // if sonar over this, shutdown
       // if sonar too high,
       strengthChargeTimeoutMillis = 0;
       ui.goStrengthPosthit(UISPH_TOO_HIGH, son - CHARGE_DISTANCE_TRIP);//this just updates the lcd screen display
@@ -256,7 +261,8 @@ void MasterSystem::UIModeChanged(byte uis) {
   */
       break;
   }
-
+    Serial.println("uiModeChanged called goReady");
+    Serial.print("lastUIState: "); Serial.println(lastUIState);
   switch (lastUIState) {
     case UIS_SCRUM_INDIVIDUAL:   pushback.goReady(ASM_INDIVIDUAL, INDIVIDUAL_SINK_RAISE);  break;
     case UIS_SCRUM_POWER:        pushback.goReady(ASM_POWER,      POWER_SINK_RAISE);       break;
@@ -292,6 +298,99 @@ void MasterSystem::UIVarChanged(byte uivn, int val) {
   }
 }
 
+void MasterSystem::pushBackAve(){
+  int average = 0;
+  if(pushbackAveFull == false){
+    pushbackSonar[pushbackArrayIndex] = halReadSonar_Pushback(2);
+    pushbackArrayIndex++;
+    if(pushbackArrayIndex == AVE_ARRAY_SIZE)
+        pushbackAveFull = true;
+    for(int i = 0; i < pushbackArrayIndex; i++){
+        average += pushbackSonar[i];
+    }
+    average = average / pushbackArrayIndex;
+  }else{
+      for(int i = 0; i < AVE_ARRAY_SIZE; i++){
+          if(i > 0)
+              average += pushbackSonar[i];
+          if(i < 9)
+              pushbackSonar[i] = pushbackSonar[i+1];
+      }
+      pushbackSonar[AVE_ARRAY_SIZE-1] = halReadSonar_Pushback(2);
+      average += pushbackSonar[AVE_ARRAY_SIZE-1];
+      pushbackSonarAve = average / AVE_ARRAY_SIZE;
+  }
+  Serial.print(" Pushback Ave: "); Serial.print(pushbackSonarAve); Serial.print(" Pushback Reading: "); Serial.println(pushbackSonar[(AVE_ARRAY_SIZE-1)]);
+  Serial.print("Pushback Sonar Direct: "); Serial.println(halReadSonar_Pushback(2));
+}
+
+    
+void MasterSystem::outriggerLooseAve(){
+  int average = 0;
+  if(outriggerLooseAveFull == false){
+    outriggerLooseSonar[outriggerLooseIndex] = halReadSonar_OutriggerLoose(2);
+    outriggerLooseIndex++;
+    if(outriggerLooseIndex == AVE_ARRAY_SIZE)
+        outriggerLooseAveFull = true;
+    for(int i = 0; i < outriggerLooseIndex; i++){
+        average += outriggerLooseSonar[i];
+    }
+    average = average / outriggerLooseIndex;
+  }else{
+      for(int i = 0; i < AVE_ARRAY_SIZE; i++){
+          if(i > 0)
+              average += outriggerLooseSonar[i];
+          if(i < 9)
+              outriggerLooseSonar[i] = outriggerLooseSonar[i+1];
+      }
+      outriggerLooseSonar[AVE_ARRAY_SIZE-1] = halReadSonar_OutriggerLoose(2);
+      average += outriggerLooseSonar[AVE_ARRAY_SIZE-1];
+      outriggerLooseSonarAve = average / AVE_ARRAY_SIZE;
+  }
+  Serial.print(" Loose Ave: "); Serial.print(outriggerLooseSonarAve); Serial.print(" Loose Reading: "); Serial.println(outriggerLooseSonar[AVE_ARRAY_SIZE-1]);
+}
+    
+
+void MasterSystem::outriggerTightAve(){
+  int average = 0;
+  if(outriggerTightAveFull == false){
+        outriggerTightSonar[outriggerTightIndex] = halReadSonar_OutriggerTight(2);
+        outriggerTightIndex++;
+        if(outriggerTightIndex == AVE_ARRAY_SIZE)
+            outriggerTightAveFull = true;
+        for(int i = 0; i < outriggerTightIndex; i++){
+            average += outriggerTightSonar[i];
+        }
+        average = average / outriggerTightIndex;
+  }else{  
+      for(int i = 0; i < AVE_ARRAY_SIZE; i++){
+          if(i > 0)
+              average += outriggerTightSonar[i];
+          if(i < 9)
+              outriggerTightSonar[i] = outriggerTightSonar[i+1];
+      }
+      outriggerTightSonar[AVE_ARRAY_SIZE-1] = halReadSonar_OutriggerTight(2);
+      average += outriggerTightSonar[AVE_ARRAY_SIZE-1];
+      outriggerTightSonarAve = average / AVE_ARRAY_SIZE;
+  }
+  Serial.print(" Tight Ave: "); Serial.print(outriggerTightSonarAve); Serial.print(" Tight Reading: "); Serial.println(outriggerTightSonar[AVE_ARRAY_SIZE-1]);
+
+}
+    
+int MasterSystem::getPushbackSonarAve(){
+    pushBackAve();
+    return pushbackSonarAve;  
+}
+
+int MasterSystem::getOutriggerLooseAve(){
+    outriggerLooseAve();
+    return outriggerLooseSonarAve;
+}
+
+int MasterSystem::getOutriggerTightAve(){
+    outriggerTightAve();
+    return outriggerTightSonarAve;
+}
 
 
 

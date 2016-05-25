@@ -445,6 +445,7 @@ void UISystem::enterState(byte newState) {
 //      lcd.setCursor(0, 1);  lcd.print("Reservoir Pressure:");
 //      showVar(UIVN_TOWING_RESPRESS);  
 //  }
+    Serial.print("UIenterState called UImode: "); Serial.println(state);
   
   master.UIModeChanged(state);
 } // end UISystem::enterState
