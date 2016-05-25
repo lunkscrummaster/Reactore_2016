@@ -8,7 +8,7 @@
 
 ////////////////////////////// MasterSystem //////////////////////////////
 
-#define AVE_ARRAY_SIZE  3
+#define AVE_ARRAY_SIZE  10
 
 class MasterSystem {
   public:

@@ -22,8 +22,11 @@ class PushbackSystem {
     void goReady(byte asMode, int sinkTo, int raiseTo);
 
     byte getState(void);
-    //    void reReady();
+    
+    int  readySinkTo, readyRaiseTo;   //moved from private to public to implement timer interrupt
 
+    void enterState(byte newState);
+    
 #ifdef DEBUG
     byte state;
 #endif
@@ -33,10 +36,9 @@ class PushbackSystem {
 #ifndef DEBUG
     byte state;
 #endif
-    void enterState(byte newState);
+ //   void enterState(byte newState);
 
     boolean enabled;
-    int     readySinkTo, readyRaiseTo;
     byte    settlingTimeout;
 };
 

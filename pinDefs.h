@@ -90,6 +90,8 @@
 */
 #define iTrailerPowerPin                  12        // ------------ pulled LOW when towing power on
 
+#define aiPushbackSonar                   A14       // Analog Pin for pushback sonar
+
 #define aiAchievedPin                     A0        // senses the air pressure built up in the main pushback arm when pushed or powervalve fires records what is held  by team 
 #define aiReservoirPin                    A1        // senses the air reservoir pressure 
 #define aiScrumPin                        A7        // Determines if scrum(high) or tow(low) based on the position of airswitch at back of vehicle. 

@@ -1,6 +1,6 @@
 #include <LiquidCrystal.h>
 #include <Timer.h>  // https://github.com/JChristensen/Timer
-
+#include <TimerOne.h>
 #include "Debug.h"
 
 
@@ -9,6 +9,7 @@
 #define MILLIS_MAX 4294967295
 #define MICROS_MAX 4294967295
 #define TRAVEL_TIME   1000
+#define sonarTimer Timer1
 /* Hi Kevin. Hope you are doing well. If you want to change the TRAVEL_TIME, which is the length of time
  *  the sled will be pushed after there was a successful push.
  *  1000 = 1 second
@@ -84,6 +85,8 @@ UISystem             ui(lcd);
 
 
 Timer heartbeatTimer;
+
+//Timer sonarTimer;
 
 
 //============================== Charge Alternate ==============================
@@ -171,6 +174,13 @@ void setup() {
 #ifdef DEBUG
   debugSetup();
 #endif
+  for(int i = 0; i < AVE_ARRAY_SIZE; i++){
+      master.pushbackSonar[i] = analogRead(aiPushbackSonar);
+  }
+
+  sonarTimer.initialize(100000);
+
+  sonarTimer.attachInterrupt(sonarISR);
 
   halSetup(); //sets up the input and output pins used the board
 
@@ -202,6 +212,8 @@ void loop() {
 //  
 //  //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill pin 34 written high by user debug button
 //  
+  long mofoStartLoop = millis();
+    
   ui.loop();          // call debouncer frequently
 
   accustat.loop();    // to average pushback-arm pressure readings
@@ -224,6 +236,7 @@ void loop() {
   master.loop();      // during Strength Charge phase
 
 
+
 #ifdef DEBUG_ORS
   outriggers.testLoop();
 #endif
@@ -232,7 +245,23 @@ void loop() {
 
   chargeAlternateTimer.update();
 
-
+    Serial.print("  ************************ time for main loop:    "); Serial.println(millis() - mofoStartLoop);
     
+} // end loop
+
+void sonarISR(){                  //****added to constanty read pushback sonar. can add master shutdown control here later.
+    for(int i = 0; i < AVE_ARRAY_SIZE; i++){
+        master.pushbackSonar[i] = master.pushbackSonar[i+1];
+    }
+    master.pushbackSonar[AVE_ARRAY_SIZE-1] = analogRead(aiPushbackSonar)*5;
+
+    if (pushback.readyRaiseTo <= master.pushbackSonar[AVE_ARRAY_SIZE-1] && pushback.getState() == PBS_READY2_RAISING) {
+        // start settling
+        pushback.heartbeat();
+      }
+//    Serial.println("Sonar ISR Finished");
+//    if(analogRead(aiPushbackSonar)  >= max analog value)
+//        while(1)
+        
 }
 

@@ -3,6 +3,7 @@
 
 #include "Arduino.h"
 #include "Debug.h"
+#include "Timer.h" 
 
 
 class OutriggerSystem {
@@ -10,6 +11,8 @@ class OutriggerSystem {
     OutriggerSystem();
     void loop(void);
     void heartbeat(void);
+    void balanceISR(void);
+    Timer balanceTimer;
 
 #ifdef DEBUG_ORS
     void testLoop(void);
@@ -18,6 +21,7 @@ class OutriggerSystem {
     void setBalanceMode(boolean en);
 
   private:
+    void setupBalanceTimer(void);
     boolean inBalanceMode;
 };
 

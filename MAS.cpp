@@ -15,7 +15,7 @@
  *  The  values below have been updated to the new sonar values for the new placement of the sonar.
  *  Minimum pushback distance is approx. 33cm, max is approx 40cm
 */
-#define INDIVIDUAL_SINK_RAISE      350, 380   // 
+#define INDIVIDUAL_SINK_RAISE      345, 375   // 
 #define POWER_SINK_RAISE           350, 380  // here are the pushback arm settings
 #define STRENGTH_SINK_RAISE        329, 337
 
@@ -300,80 +300,70 @@ void MasterSystem::UIVarChanged(byte uivn, int val) {
 
 void MasterSystem::pushBackAve(){
   int average = 0;
-  if(pushbackAveFull == false){
-    pushbackSonar[pushbackArrayIndex] = halReadSonar_Pushback(2);
-    pushbackArrayIndex++;
-    if(pushbackArrayIndex == AVE_ARRAY_SIZE)
-        pushbackAveFull = true;
-    for(int i = 0; i < pushbackArrayIndex; i++){
-        average += pushbackSonar[i];
-    }
-    average = average / pushbackArrayIndex;
-  }else{
-      for(int i = 0; i < AVE_ARRAY_SIZE; i++){
-          if(i > 0)
-              average += pushbackSonar[i];
-          if(i < 9)
-              pushbackSonar[i] = pushbackSonar[i+1];
-      }
-      pushbackSonar[AVE_ARRAY_SIZE-1] = halReadSonar_Pushback(2);
-      average += pushbackSonar[AVE_ARRAY_SIZE-1];
-      pushbackSonarAve = average / AVE_ARRAY_SIZE;
+  //int readingCount = 0;
+
+  for(int i = 0; i < AVE_ARRAY_SIZE; i++){
+     // if(pushbackSonar[i] > 0){
+          average += pushbackSonar[i];
+//          readingCount++;
+//      }
   }
-  Serial.print(" Pushback Ave: "); Serial.print(pushbackSonarAve); Serial.print(" Pushback Reading: "); Serial.println(pushbackSonar[(AVE_ARRAY_SIZE-1)]);
-  Serial.print("Pushback Sonar Direct: "); Serial.println(halReadSonar_Pushback(2));
+  pushbackSonarAve = average / AVE_ARRAY_SIZE;
+
+//  Serial.print(" Pushback Ave: "); Serial.print(pushbackSonarAve); Serial.print(" Pushback Reading: "); Serial.println(pushbackSonar[(AVE_ARRAY_SIZE-1)]);
+//  Serial.print("Pushback Sonar Direct: "); Serial.println(halReadSonar_Pushback(2));
 }
 
     
 void MasterSystem::outriggerLooseAve(){
   int average = 0;
   if(outriggerLooseAveFull == false){
-    outriggerLooseSonar[outriggerLooseIndex] = halReadSonar_OutriggerLoose(2);
+    outriggerLooseSonar[outriggerLooseIndex] = pulseIn(ioOutriggerLooseSonar, HIGH);
     outriggerLooseIndex++;
     if(outriggerLooseIndex == AVE_ARRAY_SIZE)
         outriggerLooseAveFull = true;
     for(int i = 0; i < outriggerLooseIndex; i++){
         average += outriggerLooseSonar[i];
     }
-    average = average / outriggerLooseIndex;
+    outriggerLooseSonarAve = average / outriggerLooseIndex;
   }else{
       for(int i = 0; i < AVE_ARRAY_SIZE; i++){
           if(i > 0)
               average += outriggerLooseSonar[i];
-          if(i < 9)
+          if(i < AVE_ARRAY_SIZE-1)
               outriggerLooseSonar[i] = outriggerLooseSonar[i+1];
       }
-      outriggerLooseSonar[AVE_ARRAY_SIZE-1] = halReadSonar_OutriggerLoose(2);
+      outriggerLooseSonar[AVE_ARRAY_SIZE-1] = pulseIn(ioOutriggerLooseSonar, HIGH);
       average += outriggerLooseSonar[AVE_ARRAY_SIZE-1];
       outriggerLooseSonarAve = average / AVE_ARRAY_SIZE;
   }
-  Serial.print(" Loose Ave: "); Serial.print(outriggerLooseSonarAve); Serial.print(" Loose Reading: "); Serial.println(outriggerLooseSonar[AVE_ARRAY_SIZE-1]);
+//  Serial.print(" Loose Ave: "); Serial.print(outriggerLooseSonarAve); Serial.print(" Loose Reading: "); Serial.println(outriggerLooseSonar[AVE_ARRAY_SIZE-1]);
 }
     
 
 void MasterSystem::outriggerTightAve(){
   int average = 0;
   if(outriggerTightAveFull == false){
-        outriggerTightSonar[outriggerTightIndex] = halReadSonar_OutriggerTight(2);
+        outriggerTightSonar[outriggerTightIndex] = pulseIn(ioOutriggerTightSonar, HIGH);
         outriggerTightIndex++;
         if(outriggerTightIndex == AVE_ARRAY_SIZE)
             outriggerTightAveFull = true;
         for(int i = 0; i < outriggerTightIndex; i++){
             average += outriggerTightSonar[i];
         }
-        average = average / outriggerTightIndex;
+        outriggerTightSonarAve = average / outriggerTightIndex;
   }else{  
       for(int i = 0; i < AVE_ARRAY_SIZE; i++){
           if(i > 0)
               average += outriggerTightSonar[i];
-          if(i < 9)
+          if(i < AVE_ARRAY_SIZE-1)
               outriggerTightSonar[i] = outriggerTightSonar[i+1];
       }
-      outriggerTightSonar[AVE_ARRAY_SIZE-1] = halReadSonar_OutriggerTight(2);
+      outriggerTightSonar[AVE_ARRAY_SIZE-1] = pulseIn(ioOutriggerTightSonar, HIGH);
       average += outriggerTightSonar[AVE_ARRAY_SIZE-1];
       outriggerTightSonarAve = average / AVE_ARRAY_SIZE;
   }
-  Serial.print(" Tight Ave: "); Serial.print(outriggerTightSonarAve); Serial.print(" Tight Reading: "); Serial.println(outriggerTightSonar[AVE_ARRAY_SIZE-1]);
+//  Serial.print(" Tight Ave: "); Serial.print(outriggerTightSonarAve); Serial.print(" Tight Reading: "); Serial.println(outriggerTightSonar[AVE_ARRAY_SIZE-1]);
 
 }
     

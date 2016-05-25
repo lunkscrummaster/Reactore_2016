@@ -48,9 +48,9 @@ void PushbackSystem::heartbeat() {
 
   int son = master.getPushbackSonarAve();//find value of pushback sonar
   
-  Serial.print("Push Back Sonar Value: "); Serial.println(son); Serial.print("readySinkTo: "); Serial.println(readySinkTo);
-  DEBUG_PRINT_I(son);
-  DEBUG_PRINT_S("/");
+//  Serial.print("Push Back Sonar Average: "); Serial.println(son); Serial.print("Sonar Reading: "); Serial.println(analogRead(aiPushbackSonar));
+//  DEBUG_PRINT_I(son);
+//  DEBUG_PRINT_S("/");
 //  Serial.print("Pushback System State:  "); Serial.println(pushback.state);
 //  Serial.println("waiting for debug button");
 //  //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
