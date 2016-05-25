@@ -555,7 +555,7 @@ void Accustat::heartbeat() {
       break;
   } // end switch (state)
 
-  Serial.print(" hasSeenBall = "); Serial.println(hasSeenBall);
+  //Serial.print(" hasSeenBall = "); Serial.println(hasSeenBall);
 }//end Accustat::heartbeat()
 
 byte Accustat::returnmode() {

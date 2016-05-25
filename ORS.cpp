@@ -33,15 +33,15 @@ void OutriggerSystem::loop() {
         outriggersFirstPumpDone = true;
   }
   
-  Serial.print("The balance mode is : "); Serial.println(outriggers.inBalanceMode);
+  //Serial.print("The balance mode is : "); Serial.println(outriggers.inBalanceMode);
   //  Serial.println("waiting for debug button");
   //  //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
 //&& pushback.getState() == PBS_QUIET
   if (inBalanceMode && pushback.getState() == PBS_QUIET) {
     int ld = master.getOutriggerLooseAve(); //was 2
     int td = master.getOutriggerTightAve();
-    Serial.print(" OutRiggers Loose: ");  Serial.print(ld); Serial.print(" OutRiggers Tight: "); Serial.print(td);
-    Serial.print(" Dif: "); Serial.println(ld - td);
+//    Serial.print(" OutRiggers Loose: ");  Serial.print(ld); Serial.print(" OutRiggers Tight: "); Serial.print(td);
+//    Serial.print(" Dif: "); Serial.println(ld - td);
     if (ld > 0 && td > 0) { // if both are reading good values
       if (digitalRead(oOutriggerLooseUp)) {
         if (ld - td > ORS_BALANCE_TRIP)

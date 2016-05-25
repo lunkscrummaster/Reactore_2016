@@ -150,7 +150,7 @@ void InverterSystem::heartbeat() {
     case 3:  // stopping
       if (! digitalRead(oInverterPin)){ // Arduino digitalRead lets you read from pins declared as output
         digitalWrite(oInverterPin, HIGH);} //Serial.println("Inverter stopping");  // begins pressing button on inverter
-//      Serial.println("**************************WRITTEN HIGH**************");}
+//      Serial.println("**************************WR ITTEN HIGH**************");}
       break;
 // ???? whenever the system is awake, the batteries should be linked
     case 0:  // stopped

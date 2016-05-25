@@ -201,6 +201,8 @@ void MasterSystem::heartbeat() {
   // Things we do every heartbeat while UI is in each state:
   switch (lastUIState) {
     case UIS_TOWING:
+      digitalWrite(oAirSpringLockout, HIGH);
+      delay(5000);
       digitalWrite(oAirSpringLockout, LOW);// if towing, turn pin off
       ui.setVar(UIVN_TOWING_RESPRESS, analogRead(aiReservoirPin));
       break;

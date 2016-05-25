@@ -6,7 +6,7 @@
 #include "pinDefs.h"    // iTrailerPowerPin
 
 // sleeps after this long (must be <= 136 minutes or 'timeoutHeartbeats' will overflow)
-#define SLEEP_TIMEOUT_SECONDS  (15 * 60) //original SLEEP_TIMEOUT_SECONDS  (15 * 60)
+#define SLEEP_TIMEOUT_SECONDS  (1 * 45) //original SLEEP_TIMEOUT_SECONDS  (15 * 60)
 
 //#define SSS_ASLEEP  0 //System is ASLEEP  MOVED TO HEADER
 //#define SSS_AWAKE   1 //System is AWAKE
@@ -42,14 +42,15 @@ void SleepSystem::heartbeat() {
     DEBUG_PRINT_I(timeoutHeartbeats);
   }
 #endif
-  //Serial.print("Sleep System Heartbeat State:  "); Serial.println(state);
- // Serial.print("  timeoutHeartbeats: "); Serial.println(timeoutHeartbeats);
+  Serial.print("SS_State:  "); Serial.print(state); 
+  Serial.print(" timeoutHeartbeats: "); Serial.println(timeoutHeartbeats);
+  Serial.print("oBattLink:  "); Serial.print(digitalRead(oBatteryLink));   
   switch (state) {
     case SSS_AWAKE:
       if (timeoutHeartbeats > 0)  {
         timeoutHeartbeats--; //decrement the timer
  //       Serial.print("  timeoutHeartbeats = "); Serial.println(timeoutHeartbeats);
-        digitalWrite(oBatteryLink, HIGH); // **** A Connect the batteries when AWAKE
+ //       digitalWrite(oBatteryLink, HIGH); // **** A Connect the batteries when AWAKE :: moved to enterSate()
   }
       else if (true /* canSleep */) {
  //       Serial.println("gone to sleep@@@@@@@@@@@@@@");
@@ -60,7 +61,7 @@ void SleepSystem::heartbeat() {
        it may need to connect the batteries for the inverter to add air to the resevoir
        find a new place to do this
        */
-       digitalWrite(oBatteryLink, LOW);
+       //digitalWrite(oBatteryLink, LOW); // moved to enterState
       }
       break;
   }// end switch
@@ -93,17 +94,17 @@ void SleepSystem::enterState(byte newState) {
            *  We had the inverter on while sleep from strength mode.
            *  Fix, if we enter sleep, with inverter on, this will turn it off.
          */
-         if (digitalRead(iInverterOnPin))
-         {
+         if (digitalRead(iInverterOnPin)){
           inverter.neededByDumpValve (false);
          }
+         digitalWrite(oBatteryLink, LOW);
       break;
 
     case SSS_AWAKE:
-      if (ui.getState() > 2)
-      {
+      if (ui.getState() > 2){
         inverter.neededByDumpValve (true);
-        }
+      }
+      digitalWrite(oBatteryLink, HIGH);
       timeoutHeartbeats = SLEEP_TIMEOUT_SECONDS * HEARTBEATS_PER_SECOND;
      // Serial.println("The SSS_awake enterstate fucntion reset timeoutheartbeats");
       // added analogRead(aiScrumPin) == LOW to see if that would help the LED screen from flickering

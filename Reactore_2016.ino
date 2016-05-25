@@ -246,6 +246,7 @@ void loop() {
   chargeAlternateTimer.update();
 
   Serial.print("  ************************ time for main loop:    "); Serial.println(millis() - mofoStartLoop);
+ 
 
 } // end loop
 

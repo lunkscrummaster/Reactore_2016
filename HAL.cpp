@@ -93,7 +93,7 @@ void halSetup() {
     LOW,  oInitialChargeDown,
 
     LOW,  oInverterPin,
-    LOW,  oBatteryLink,
+    HIGH,  oBatteryLink,
 
     LOW,  oSuccess,
     LOW,  oBeeper,
