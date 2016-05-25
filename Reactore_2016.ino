@@ -5,7 +5,7 @@
 
 
 // battery charge circuit alternates every 'CHARGE_ALTERNATE_MINUTES'
-#define CHARGE_ALTERNATE_MINUTES   60
+#define CHARGE_ALTERNATE_MINUTES   60 // **** changed from 60, doesn't matter if it is awake or sleep
 #define MILLIS_MAX 4294967295
 #define MICROS_MAX 4294967295
 #define TRAVEL_TIME   1000
@@ -95,6 +95,7 @@ Timer chargeAlternateTimer;
 
 void chargeAlternateCallback() {
   digitalWrite(oChargeAlternatePin, ! digitalRead(oChargeAlternatePin));
+//  Serial.print(" Charge alternate pin is: "); Serial.println(digitalRead(oChargeAlternatePin));
 }
 
 
@@ -245,7 +246,7 @@ void loop() {
 
   chargeAlternateTimer.update();
 
-  Serial.print("  ************************ time for main loop:    "); Serial.println(millis() - mofoStartLoop);
+//  Serial.print("  ************************ time for main loop:    "); Serial.println(millis() - mofoStartLoop);
  
 
 } // end loop
