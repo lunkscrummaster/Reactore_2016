@@ -10,24 +10,33 @@
 #define BALANCE_PERIOD    100 //in microseconds
 
 OutriggerSystem::OutriggerSystem() {
-//  Timer balanceTimer;
-////setupBalanceTimer();
-//  balanceTimer.initialize(BALANCE_PERIOD);
-//  balanceTimer.attachInterrupt(balanceISR);
+  //  Timer balanceTimer;
+  ////setupBalanceTimer();
+  //  balanceTimer.initialize(BALANCE_PERIOD);
+  //  balanceTimer.attachInterrupt(balanceISR);
 }
-void OutriggerSystem::setupBalanceTimer(){
-//  balanceTimer.initialize(BALANCE_PERIOD);
-//  balanceTimer.attachInterrupt(balanceISR);
+void OutriggerSystem::setupBalanceTimer() {
+  //  balanceTimer.initialize(BALANCE_PERIOD);
+  //  balanceTimer.attachInterrupt(balanceISR);
 }
 /*OutriggerSystem checks if the machine is inBalanceMode, and raises the loose up or down
    ORS_BALANCE_TRIP == 40 WHICH IS ABOVE ^^^
 */
 void OutriggerSystem::loop() {
   //  Serial.println("Outrigger Loop started");
-  // Serial.print("The balance mode is : "); Serial.println(outriggers.inBalanceMode);
+  if(outriggersFirstPumpDone == false){
+        digitalWrite(oOutriggerLooseUp, HIGH);
+        digitalWrite(oOutriggerTightUp, HIGH);
+        delay(200);
+        digitalWrite(oOutriggerLooseUp, LOW);
+        digitalWrite(oOutriggerTightUp, LOW);
+        outriggersFirstPumpDone = true;
+  }
+  
+  Serial.print("The balance mode is : "); Serial.println(outriggers.inBalanceMode);
   //  Serial.println("waiting for debug button");
   //  //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill high by user debug button
-
+//&& pushback.getState() == PBS_QUIET
   if (inBalanceMode && pushback.getState() == PBS_QUIET) {
     int ld = master.getOutriggerLooseAve(); //was 2
     int td = master.getOutriggerTightAve();
@@ -37,23 +46,26 @@ void OutriggerSystem::loop() {
       if (digitalRead(oOutriggerLooseUp)) {
         if (ld - td > ORS_BALANCE_TRIP)
           digitalWrite(oOutriggerLooseUp, LOW);
-      } else {
-        if (ld - td < - ORS_BALANCE_TRIP) {
-          digitalWrite(oOutriggerLooseUp, HIGH);
-          delay(100);
-          digitalWrite(oOutriggerLooseUp, LOW);
-        }
-          
-      } // end else
-      
+      } else if (ld - td < - ORS_BALANCE_TRIP) {
+        digitalWrite(oOutriggerLooseUp, HIGH);
+        delay(100);
+        digitalWrite(oOutriggerLooseUp, LOW);
+
+
+      } else { // end 1st else
+        setBalanceMode(false);
+      }//ends last else
+
     } // end if (ld > 0 && td > 0)
-    
-    int dif = ld - td;      // differencing algorythm to appropriately set inBalanceMode
-    if (dif < 0)
-      dif = td - ld;
-    if (dif < ORS_BALANCE_TRIP) 
-      setBalanceMode(false); Serial.println("setBalanceMode = FALSE");
-    
+    //    if(balancingDone == true){
+    //      int dif = ld - td;      // differencing algorythm to appropriately set inBalanceMode
+    //      if (dif < 0)
+    //        dif = td - ld;
+    //      if (dif < ORS_BALANCE_TRIP)
+    //        setBalanceMode(false); Serial.println("setBalanceMode = FALSE");
+    //      balancingDone = false;
+    //    }
+
   } // end if(inBalanceMode)
 
 }// end of outrigger system
@@ -125,7 +137,7 @@ void OutriggerSystem::setBalanceMode(boolean en) {
     if (! en) {
       // disabling balance mode, and end timer
       inBalanceMode = false;
-//      balanceTimer.stop();
+      //      balanceTimer.stop();
       digitalWrite(oOutriggerLooseDown, LOW);
       digitalWrite(oOutriggerLooseUp,   LOW);
       digitalWrite(oOutriggerTightDown, LOW);
@@ -135,7 +147,8 @@ void OutriggerSystem::setBalanceMode(boolean en) {
     if (en) {
       // enabling balance mode, and start timmer
       inBalanceMode = true;
-//      balanceTimer.restart();
+      outriggersFirstPumpDone = false; 
+      //      balanceTimer.restart();
     } // end if (en)
   } // end else
 } // end setBalanceMode

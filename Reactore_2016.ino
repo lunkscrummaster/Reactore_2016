@@ -11,9 +11,9 @@
 #define TRAVEL_TIME   1000
 #define sonarTimer Timer1
 /* Hi Kevin. Hope you are doing well. If you want to change the TRAVEL_TIME, which is the length of time
- *  the sled will be pushed after there was a successful push.
- *  1000 = 1 second
- *  2000 = 2 seconds etc...
+    the sled will be pushed after there was a successful push.
+    1000 = 1 second
+    2000 = 2 seconds etc...
 */
 
 #include "AS.h"
@@ -105,14 +105,14 @@ extern void beep(byte count);  // AS.cpp
 #endif
 
 /* heartbeat()
- *  This is the main heartbeat of the system. All other heart beats are called from here.
+    This is the main heartbeat of the system. All other heart beats are called from here.
 */
 void heartbeat() {
- // Serial.println("Enter Heartbeat");
+  // Serial.println("Enter Heartbeat");
 #ifdef DEBUG
   switch (debugRead()) {
-//  case '0':  digitalWrite(oSuccess, LOW);   break;
-//  case '1':  digitalWrite(oSuccess, HIGH);  break;
+    //  case '0':  digitalWrite(oSuccess, LOW);   break;
+    //  case '1':  digitalWrite(oSuccess, HIGH);  break;
 
     case 'a':  debugFlagAS    = ! debugFlagAS;     break;
     case 'b':  beep(2);  break;  // to test beeper
@@ -123,12 +123,12 @@ void heartbeat() {
     case 's':  debugFlagSonar = ! debugFlagSonar;  break;
   }
 #endif
-  
+
   accustat.heartbeat();     //AS.cpp
   comp.heartbeat();         //CIS.cpp comp = compressor system
   initcharge.heartbeat();   //ICS.cpp initial charge system
   inverter.heartbeat();     //CIS.cpp inverter = inverter system
-  master.heartbeat();       // MAS.cpp 
+  master.heartbeat();       // MAS.cpp
   outriggers.heartbeat();   // ORS.cpp
   pushback.heartbeat();     // PBS.cpp
   sleep.heartbeat();        // SS.cpp
@@ -168,14 +168,14 @@ void heartbeat() {
 
 //============================== setup ==============================
 /* setup()
- *  This sets up the program and the board.
+    This sets up the program and the board.
 */
 void setup() {
 #ifdef DEBUG
   debugSetup();
 #endif
-  for(int i = 0; i < AVE_ARRAY_SIZE; i++){
-      master.pushbackSonar[i] = analogRead(aiPushbackSonar);
+  for (int i = 0; i < AVE_ARRAY_SIZE; i++) {
+    master.pushbackSonar[i] = analogRead(aiPushbackSonar);
   }
 
   sonarTimer.initialize(100000);
@@ -192,46 +192,46 @@ void setup() {
 
   chargeAlternateTimer.every(CHARGE_ALTERNATE_MINUTES * 60L * 1000, chargeAlternateCallback);
 
-  DEBUG_PRINT_S("Setup done\n");  
-  
- // Serial.println("Setup Complete");
+  DEBUG_PRINT_S("Setup done\n");
+
+  // Serial.println("Setup Complete");
 }
 
 
 
 //============================== loop ==============================
 /* loop()
- *  This is the main loop of the program. After setup, code runs this loop.
+    This is the main loop of the program. After setup, code runs this loop.
 */
 
 void loop() {
 
-//  Serial.println("Main Loop Started"); 
-//  Serial.println("waiting for debug button");
-//  Serial.print("This is the initial accustat mode"); Serial.println(accustat.returnmode());
-//  
-//  //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill pin 34 written high by user debug button
-//  
+  //  Serial.println("Main Loop Started");
+  //  Serial.println("waiting for debug button");
+  //  Serial.print("This is the initial accustat mode"); Serial.println(accustat.returnmode());
+  //
+  //  //while(pulseIn(ioTight_ball_sonar, HIGH) > 300);  Serial.println("continue"); // debug, waits untill pin 34 written high by user debug button
+  //
   long mofoStartLoop = millis();
-    
+
   ui.loop();          // call debouncer frequently
 
   accustat.loop();    // to average pushback-arm pressure readings
 
   outriggers.loop();  // fast update of outrigger balancing system
   /* Code added May 21 by Trevor and Zach
-   *  The code below is used for the successtimer which is what is used to determine how long the 
-   *  sled can be pushed after a success. Code handles rollovers after approx 50days
+      The code below is used for the successtimer which is what is used to determine how long the
+      sled can be pushed after a success. Code handles rollovers after approx 50days
   */
-  if(master.successStartTime > 0){
-       long currentMillis = millis() - master.successStartTime;
-      if(currentMillis < 0)
-          currentMillis += MILLIS_MAX; // rollover
-      if (currentMillis > TRAVEL_TIME) {
-        digitalWrite(oSuccess, LOW); 
-        master.successStartTime = 0;
-      } 
-      
+  if (master.successStartTime > 0) {
+    long currentMillis = millis() - master.successStartTime;
+    if (currentMillis < 0)
+      currentMillis += MILLIS_MAX; // rollover
+    if (currentMillis > TRAVEL_TIME) {
+      digitalWrite(oSuccess, LOW);
+      master.successStartTime = 0;
+    }
+
   }
   master.loop();      // during Strength Charge phase
 
@@ -245,23 +245,27 @@ void loop() {
 
   chargeAlternateTimer.update();
 
-    Serial.print("  ************************ time for main loop:    "); Serial.println(millis() - mofoStartLoop);
-    
+  Serial.print("  ************************ time for main loop:    "); Serial.println(millis() - mofoStartLoop);
+
 } // end loop
 
-void sonarISR(){                  //****added to constanty read pushback sonar. can add master shutdown control here later.
-    for(int i = 0; i < AVE_ARRAY_SIZE; i++){
-        master.pushbackSonar[i] = master.pushbackSonar[i+1];
-    }
-    master.pushbackSonar[AVE_ARRAY_SIZE-1] = analogRead(aiPushbackSonar)*5;
+void sonarISR() {                 //****added to constanty read pushback sonar. can add master shutdown control here later.
+  for (int i = 0; i < AVE_ARRAY_SIZE; i++) {
+    master.pushbackSonar[i] = master.pushbackSonar[i + 1];
+  }
+  master.pushbackSonar[AVE_ARRAY_SIZE - 1] = analogRead(aiPushbackSonar) * 5;
 
-    if (pushback.readyRaiseTo <= master.pushbackSonar[AVE_ARRAY_SIZE-1] && pushback.getState() == PBS_READY2_RAISING) {
-        // start settling
-        pushback.heartbeat();
-      }
-//    Serial.println("Sonar ISR Finished");
-//    if(analogRead(aiPushbackSonar)  >= max analog value)
-//        while(1)
-        
+  if (pushback.readyRaiseTo <= master.pushbackSonar[AVE_ARRAY_SIZE - 1] &&
+      pushback.getState()   == PBS_READY2_RAISING                       &&
+      sleep.getState()      == SSS_AWAKE) {
+
+    // start settling
+    pushback.enterState(PBS_READY3_SETTLING);
+    //pushback.heartbeat();
+  }
+  //    Serial.println("Sonar ISR Finished");
+  //    if(analogRead(aiPushbackSonar)  >= max analog value)
+  //        while(1)
+
 }
 

@@ -19,6 +19,7 @@ class OutriggerSystem {
 #endif
 
     void setBalanceMode(boolean en);
+    boolean outriggersFirstPumpDone = false;
 
   private:
     void setupBalanceTimer(void);

@@ -16,8 +16,8 @@
  *  Minimum pushback distance is approx. 33cm, max is approx 40cm
 */
 #define INDIVIDUAL_SINK_RAISE      345, 375   // 
-#define POWER_SINK_RAISE           350, 380  // here are the pushback arm settings
-#define STRENGTH_SINK_RAISE        329, 337
+#define POWER_SINK_RAISE           345, 375  // here are the pushback arm settings
+#define STRENGTH_SINK_RAISE        325, 332
 
 
 // limits for pushback arm during charge (raw values)
